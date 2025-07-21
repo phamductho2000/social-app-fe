@@ -1,0 +1,84 @@
+.wrap-image {
+  position: relative;
+}
+
+/*.wrap-image:hover {*/
+/*  background: red;*/
+/*}*/
+
+.wrap-image:hover .wrap-image-img {
+  opacity: 0.3;
+}
+
+.wrap-image:hover .wrap-image-hover {
+  opacity: 1;
+}
+
+.wrap-image .wrap-image-hover {
+  transition: .5s ease;
+  opacity: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.wrap-image .wrap-image-img {
+  opacity: 1;
+  display: block;
+  width: 150px;
+  height: 150px;
+  transition: .5s ease;
+  backface-visibility: hidden;
+}
+
+.image-name {
+  width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.box-upload-file {
+  align-items: center;
+  background: #f4f7ff;
+  border: 1px dashed #5999ff;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 48px;
+  padding: 157px 47px 36px;
+  text-align: center;
+  width: 100%;
+}
+
+.popup-progress-upload {
+  background: var(--wsr-color-D75, #fff);
+  border-radius: 6px;
+  bottom: 18px;
+  box-shadow: 0 6px 6px 0 rgba(#000624,.06), 0 0 18px 0 rgba(#000624,.12);
+  display: flex;
+  flex-direction: column;
+  left: 18px;
+  max-height: 270px;
+  overflow: hidden;
+  position: absolute;
+  transition: height .3s;
+  width: 400px;
+  z-index: 2050;
+}
+
+.popup-progress-upload .file-name {
+  width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.modal-storage-manager {
+  height: 800px;
+  overflow: hidden;
+}

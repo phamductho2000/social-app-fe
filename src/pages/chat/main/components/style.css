@@ -1,0 +1,76 @@
+.wrap-input-tags {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  box-sizing: border-box;
+  margin: 0;
+  /*padding: 10px;*/
+  color: rgba(0, 0, 0, 0.88);
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  border-radius: 10px;
+  transition: all 0.2s;
+  background: #ffffff;
+  /*border-width: 1px;*/
+  /*border-style: solid;*/
+  border-color: #d9d9d9;
+  flex-wrap: wrap;
+}
+
+.wrap-input-tags:focus-within {
+  /*border-color: #1890ff;*/
+  /*box-shadow: 0 0 0 2px rgba(5, 175, 255, 0.1);*/
+  /*outline: 0;*/
+  /*background-color: #ffffff;*/
+}
+
+.wrap-input-tags .tag-ele {
+  display: flex;
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: #DAEFFE;
+  padding: 5px;
+  margin: 5px;
+  max-height: 30px;
+}
+
+.wrap-input-tags .input-ele {
+  border: none;
+  flex: 1;
+}
+
+.wrap-input-tags .input-ele:focus-within {
+  box-shadow: none;
+}
+
+.message-bubble {
+  background-color: #d4f8c4;
+  border-radius: 12px;
+  padding: 8px 12px;
+  max-width: 60%;
+  display: inline-flex;
+  align-items: flex-end; /* giúp căn đáy dòng */
+  gap: 6px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #222;
+  flex-wrap: wrap; /* xuống dòng nếu text dài */
+}
+
+.message-text {
+  display: inline;
+  word-break: break-word;
+  white-space: pre-wrap;
+  flex-shrink: 1;
+}
+
+.message-meta {
+  font-size: 11px;
+  color: #555;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}

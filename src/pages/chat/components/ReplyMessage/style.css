@@ -1,0 +1,21 @@
+.reply-message {
+  padding: 5px;
+  border-radius: 5px;
+  border-left: 4px solid #52c41a;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  cursor: pointer;
+}
+
+.reply-message .title {
+  color: #52c41a;
+  font-weight: 600;
+}
+
+.reply-message .content {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

@@ -1,0 +1,7 @@
+.reaction-container {
+  padding: 1px;
+  border-radius: 5px;
+  background-color: #ffffff;
+  width: fit-content;
+  cursor: pointer;
+}
