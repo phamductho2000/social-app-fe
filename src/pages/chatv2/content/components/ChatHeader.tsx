@@ -1,4 +1,4 @@
-import {Avatar, Button} from "antd";
+import {Avatar, Button, Space} from "antd";
 import {BackIcon, InfoIcon, MoreIcon, PhoneIcon, VideoIcon} from "@/components/Icon";
 import {FC} from "react";
 
@@ -52,7 +52,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({
           src={conversation.avatar}
           size={36}
         />
-        <div style={{marginLeft: 12}}>
+        <Space style={{marginLeft: 12}} direction="vertical">
           <div style={{fontSize: '16px', fontWeight: 600, margin: 0}}>
             {conversation.name}
           </div>
@@ -61,7 +61,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({
               ? `${conversation?.participants?.length} thành viên`
               : 'Đang hoạt động'}
           </div>
-        </div>
+        </Space>
       </div>
 
       <div style={{display: 'flex', gap: '4px'}}>

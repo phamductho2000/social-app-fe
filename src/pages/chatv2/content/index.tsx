@@ -18,7 +18,7 @@ const ChatContent = () => {
   const [showConversations, setShowConversations] = useState(false);
   const [showInfoSidebar, setShowInfoSidebar] = useState(false);
   const currentUser = useCurrentUser();
-  const {messages, handleNewMessage, fetchMessages} = useModel("message");
+  const {messages, handleNewMessage, fetchMessages, isLoading, total} = useModel("message");
   const {activeConversation} = useModel("conversation");
   const {subscribe, send} = useWebSocket();
   const [visibleRange, setVisibleRange] = useState({
@@ -37,7 +37,13 @@ const ChatContent = () => {
   //   }
   // }, [visibleRange]);
 
-  const handleFetchMessage = () => {
+  const handleFetchMoreMessages = () => {
+    if (activeConversation?.conversationId && total > 20) {
+      fetchMessages(activeConversation.conversationId);
+    }
+  }
+
+  const handleInitialFetchMessages = () => {
     if (activeConversation?.conversationId) {
       fetchMessages(activeConversation.conversationId);
     }
@@ -62,7 +68,7 @@ const ChatContent = () => {
 
   useEffect(() => {
 
-    handleFetchMessage();
+    handleInitialFetchMessages();
     handleConnectConversation();
 
     const unSubscribe = subscribe(`/topic/message/conversation/${activeConversation?.conversationId}`, (msg) => {
@@ -126,7 +132,14 @@ const ChatContent = () => {
       }
       exist.summaryReaction = summaryReaction;
     }
-    send(TOPIC_MESSAGE_REACT, exist)
+    handleNewMessage(exist);
+    const payload = {
+      conversationId: activeConversation?.conversationId,
+      messageId: messageId,
+      emoji: emoji,
+      userId: currentUser?.userId,
+    }
+    send(TOPIC_MESSAGE_REACT + activeConversation?.conversationId, payload)
   };
 
   const handleReply = (message: API.MessageResDTO) => {
@@ -194,7 +207,7 @@ const ChatContent = () => {
 
               <Virtuoso
                 totalCount={messages?.length}
-                defaultItemHeight={85}
+                defaultItemHeight={100}
                 data={messages}
                 followOutput={(isAtBottom) => {
                   return isAtBottom;
@@ -203,7 +216,7 @@ const ChatContent = () => {
                 firstItemIndex={0}
                 initialTopMostItemIndex={messages.length - 1}
                 startReached={(index) => {
-                  handleFetchMessage();
+                  handleFetchMoreMessages();
                 }}
                 itemContent={(index, message) => (
                   <MessageBubble
@@ -223,7 +236,7 @@ const ChatContent = () => {
                   Header: () => {
                     return (
                       <Flex align="center" gap="middle" justify={"center"}>
-                        <Spin indicator={<LoadingOutlined spin/>}/>
+                        <Spin indicator={<LoadingOutlined spin={isLoading}/>}/>
                       </Flex>
                     )
                   }

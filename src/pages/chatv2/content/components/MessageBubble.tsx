@@ -156,7 +156,11 @@ const MessageBubble: FC<MessageBubbleProps> = ({
 
       case 'TEXT':
       default:
-        return message.content;
+        return (
+          <div style={{fontSize: '16px'}}>
+            {message.content}
+          </div>
+        );
     }
   };
 
@@ -178,7 +182,6 @@ const MessageBubble: FC<MessageBubbleProps> = ({
       {/*)}*/}
 
       <div style={{maxWidth: '70%', position: 'relative'}}>
-        {/* Reply indicator */}
         {replyToMessage && (
           <div style={{
             backgroundColor: isOwn ? 'rgba(255,255,255,0.2)' : '#e6f7ff',
@@ -209,21 +212,45 @@ const MessageBubble: FC<MessageBubbleProps> = ({
           <div
             onContextMenu={handleContextMenu}
             style={{
+              display: 'flex',
+              justifyContent: 'flex-start',
+              gap: '8px',
               padding: '8px 12px',
               borderRadius: '12px 12px 12px 4px',
               backgroundColor: isOwn ? '#1890ff' : '#f0f0f0',
               color: isOwn ? 'white' : 'black',
               position: 'relative',
               cursor: 'pointer',
+              width: 'fit-content'
             }}
           >
             {renderMessageContent()}
-            {showReactionPicker && (
-              <ReactionPicker
-                onSelect={handleReactionSelect}
-                onClose={() => setShowReactionPicker(false)}
-              />
-            )}
+            <div
+              style={{
+                fontSize: "11px",
+                color: "#777",
+              }}
+            >
+              <div style={{visibility: 'hidden'}}>
+                {dayjs(message?.sentAt)?.format("HH:mm")}
+                {isOwn && message?.status && (
+                  <span style={{marginLeft: 4}}>
+                  {message?.status === 'READ' ? '✓✓' : message.status === 'SENT' ? '✓' : '○'}
+                </span>
+                )}
+              </div>
+              <div style={{
+                bottom: 3,
+                position: 'absolute',
+              }}>
+                {dayjs(message?.sentAt)?.format("HH:mm")}
+                {isOwn && message?.status && (
+                  <span style={{marginLeft: 4}}>
+                  {message?.status === 'READ' ? '✓✓' : message.status === 'SENT' ? '✓' : '○'}
+                </span>
+                )}
+              </div>
+            </div>
           </div>
 
         </Dropdown>
@@ -234,22 +261,29 @@ const MessageBubble: FC<MessageBubbleProps> = ({
           onAddReaction={() => setShowReactionPicker(true)}
         />
 
-        <div
-          style={{
-            fontSize: '12px',
-            color: '#999',
-            marginTop: 4,
-            // textAlign: isOwn ? 'right' : 'left',
-            textAlign: 'left',
-          }}
-        >
-          {dayjs(message?.sentAt)?.format("HH:mm")}
-          {isOwn && message?.status && (
-            <span style={{marginLeft: 4}}>
-              {message?.status === 'READ' ? '✓✓' : message.status === 'SENT' ? '✓' : '○'}
-            </span>
-          )}
-        </div>
+        {showReactionPicker && (
+          <ReactionPicker
+            onSelect={handleReactionSelect}
+            onClose={() => setShowReactionPicker(false)}
+          />
+        )}
+
+        {/*<div*/}
+        {/*  style={{*/}
+        {/*    fontSize: '12px',*/}
+        {/*    color: '#999',*/}
+        {/*    marginTop: 4,*/}
+        {/*    // textAlign: isOwn ? 'right' : 'left',*/}
+        {/*    textAlign: 'right',*/}
+        {/*  }}*/}
+        {/*>*/}
+        {/*  {dayjs(message?.sentAt)?.format("HH:mm")}*/}
+        {/*  {isOwn && message?.status && (*/}
+        {/*    <span style={{marginLeft: 4}}>*/}
+        {/*      {message?.status === 'READ' ? '✓✓' : message.status === 'SENT' ? '✓' : '○'}*/}
+        {/*    </span>*/}
+        {/*  )}*/}
+        {/*</div>*/}
       </div>
     </div>
   );
