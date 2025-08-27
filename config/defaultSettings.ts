@@ -26,7 +26,7 @@ const Settings: ProLayoutProps & {
       paddingInlinePageContainerContent: 0,
       colorBgPageContainerFixed: '#E9EBEE',
       colorBgPageContainer: '#E9EBEE',
-    }
+    },
   },
 };
 

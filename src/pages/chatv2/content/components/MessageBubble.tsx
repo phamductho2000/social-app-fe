@@ -1,14 +1,18 @@
 import {FC, useState} from "react";
-import {Avatar, Dropdown, MenuProps} from "antd";
-import {EmojiIcon, ReplyIcon} from "@/components/Icon";
+import {Avatar, Dropdown, Menu, MenuProps, Popover} from "antd";
 import MessageReactions from "@/pages/chatv2/content/components/MessageReactions";
 import ReactionPicker from "@/pages/chatv2/content/components/ReactionPicker";
 import ImageMessage from "@/pages/chatv2/content/components/ImageMessage";
 import VideoMessage from "@/pages/chatv2/content/components/VideoMessage";
 import FileMessage from "@/pages/chatv2/content/components/FileMessage";
 import dayjs from "dayjs";
-import {CopyOutlined, EditOutlined, RestOutlined} from "@ant-design/icons";
-
+import ReplyOutlinedIcon from '@mui/icons-material/ReplyOutlined';
+import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import ForwardOutlinedIcon from '@mui/icons-material/ForwardOutlined';
+import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
+import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 
 type Message = API.MessageResDTO & {
   isOwn: boolean
@@ -41,17 +45,28 @@ const MessageBubble: FC<MessageBubbleProps> = ({
   const items: MenuProps['items'] = [
     {
       key: '1',
-      label: 'Thả cảm xúc',
-      icon: <EmojiIcon/>,
+      label: <ReactionPicker
+        onSelect={handleReactionSelect}
+        onClose={() => setShowReactionPicker(false)}
+      />,
+      // icon: <EmojiIcon/>,
       onClick: () => {
         setShowReactionPicker(true);
         setShowMenu(false);
-      }
+      },
+      className: "no-hover"
     },
     {
+      type: 'divider',
+    },
+    {
+      //  style: {
+      //   margin: 10,
+      //   fontSize: 16
+      // },
       key: '2',
       label: 'Trả lời',
-      icon: <ReplyIcon/>,
+      icon: <ReplyOutlinedIcon/>,
       onClick: () => {
         onReply?.(message);
       }
@@ -59,26 +74,55 @@ const MessageBubble: FC<MessageBubbleProps> = ({
     {
       key: '3',
       label: 'Chỉnh sửa',
-      icon: <EditOutlined/>
+      icon: <EditOutlinedIcon/>
     },
     {
       key: '4',
       label: 'Sao chép',
-      icon: <CopyOutlined/>,
+      icon: <ContentCopyOutlinedIcon/>,
       onClick: () => {
         onCopy?.(message.content);
       }
     },
     {
       key: '5',
-      label: 'Xóa',
-      icon: <RestOutlined/>
+      label: 'Ghim',
+      icon: <PushPinOutlinedIcon/>,
+      onClick: () => {
+        onCopy?.(message.content);
+      }
     },
+    {
+      key: '6',
+      label: 'Chọn',
+      icon: <CheckCircleOutlineOutlinedIcon/>,
+      onClick: () => {
+        onCopy?.(message.content);
+      }
+    },
+    {
+      key: '6',
+      label: 'Chuyển tiếp',
+      icon: <ForwardOutlinedIcon/>,
+      onClick: () => {
+        onCopy?.(message.content);
+      }
+    },
+    {
+      key: '7',
+      label: 'Xóa',
+      icon: <DeleteOutlinedIcon/>
+    },
+    {
+      type: "divider"
+    }
   ];
+
+  console.log('showMenu', showMenu)
 
   const handleContextMenu = (e) => {
     e.preventDefault();
-    setShowMenu(!showMenu);
+    // setShowMenu(!showMenu);
   };
 
   const handleReactionSelect = (emoji: string) => {
@@ -168,18 +212,18 @@ const MessageBubble: FC<MessageBubbleProps> = ({
     <div
       style={{
         display: 'flex',
-        justifyContent: 'flex-start',
+        justifyContent: isOwn ? 'flex-end' : 'flex-start',
         marginBottom: 15,
         position: 'relative',
       }}
     >
-      {/*{!isOwn && (*/}
-      <Avatar
-        size={32}
-        src={message?.sender?.avatar}
-        style={{marginRight: 8}}
-      />
-      {/*)}*/}
+      {!isOwn && (
+        <Avatar
+          size={32}
+          src={message?.sender?.avatar}
+          style={{marginRight: 8}}
+        />
+      )}
 
       <div style={{maxWidth: '70%', position: 'relative'}}>
         {replyToMessage && (
@@ -208,7 +252,37 @@ const MessageBubble: FC<MessageBubbleProps> = ({
           </div>
         )}
 
-        <Dropdown menu={{items}} trigger={['contextMenu']}>
+
+        <Dropdown popupRender={(menu) => (
+          // <Popover
+          //   content={
+          //
+          //     <ReactionPicker
+          //       onSelect={handleReactionSelect}
+          //       onClose={() => setShowReactionPicker(false)}
+          //     />
+          //   }
+          // trigger="click"
+          // trigger="click"
+          // open={showReactionPicker} // Thêm prop open để control
+          // onOpenChange={(visible) => setShowReactionPicker(visible)}
+          // onOpenChange={handleClickChange}
+          // >
+          <Menu
+            style={{width: 150, fontSize: 16}}
+            mode="vertical"
+            items={items}
+          />
+          // </Popover>
+        )}
+                  trigger={['contextMenu']}
+                  onOpenChange={(open) => {
+                    setShowMenu(open);
+                    // Đóng popover khi dropdown đóng
+                    setShowReactionPicker(open);
+
+                  }}
+        >
           <div
             onContextMenu={handleContextMenu}
             style={{
@@ -216,9 +290,9 @@ const MessageBubble: FC<MessageBubbleProps> = ({
               justifyContent: 'flex-start',
               gap: '8px',
               padding: '8px 12px',
-              borderRadius: '12px 12px 12px 4px',
-              backgroundColor: isOwn ? '#1890ff' : '#f0f0f0',
-              color: isOwn ? 'white' : 'black',
+              borderRadius: isOwn ? '12px 12px 4px 12px' : '12px 12px 12px 4px',
+              backgroundColor: isOwn ? '#EEFFDE' : '#ffffff',
+              color: isOwn ? 'black' : 'black',
               position: 'relative',
               cursor: 'pointer',
               width: 'fit-content'
@@ -252,7 +326,6 @@ const MessageBubble: FC<MessageBubbleProps> = ({
               </div>
             </div>
           </div>
-
         </Dropdown>
 
         <MessageReactions
@@ -261,12 +334,12 @@ const MessageBubble: FC<MessageBubbleProps> = ({
           onAddReaction={() => setShowReactionPicker(true)}
         />
 
-        {showReactionPicker && (
-          <ReactionPicker
-            onSelect={handleReactionSelect}
-            onClose={() => setShowReactionPicker(false)}
-          />
-        )}
+        {/*{showReactionPicker && (*/}
+        {/*  <ReactionPicker*/}
+        {/*    onSelect={handleReactionSelect}*/}
+        {/*    onClose={() => setShowReactionPicker(false)}*/}
+        {/*  />*/}
+        {/*)}*/}
 
         {/*<div*/}
         {/*  style={{*/}
@@ -286,6 +359,7 @@ const MessageBubble: FC<MessageBubbleProps> = ({
         {/*</div>*/}
       </div>
     </div>
-  );
+  )
+    ;
 };
 export default MessageBubble;

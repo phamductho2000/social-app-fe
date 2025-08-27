@@ -9,6 +9,7 @@ import {Notification} from "@/components/RightContent";
 import WebSocketProvider from "@/websocket/WebSocketProvider";
 import {getCurrentUserLogin} from "@/services/user/userController";
 import {history} from '@umijs/max';
+import {App, ConfigProvider} from "antd";
 
 const paths = ['/login', '/register'];
 
@@ -31,6 +32,25 @@ export async function getInitialState(): Promise<{
   };
 }
 
+export function rootContainer(container: React.ReactNode) {
+  return (
+    <ConfigProvider
+      key="theme-provider"
+      theme={{
+        components: {
+          Menu: {
+            itemHoverBg: '#1677ff',
+          },
+        },
+      }}
+    >
+      <App>
+        {container}
+      </App>
+    </ConfigProvider>
+  );
+}
+
 export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => {
   return {
     actionsRender: () => [<Notification key="noti"/>, <Question key="doc"/>, <SelectLang key="SelectLang"/>],
@@ -46,24 +66,20 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
     childrenRender: (children) => {
       if (initialState?.loading) return <PageLoading/>;
       return (
-        <>
+        <ConfigProvider
+          key="theme-provider"
+          theme={{
+            components: {
+              Menu: {
+                itemHoverBg: '#1677ff',
+              },
+            },
+          }}
+        >
           <WebSocketProvider>
             {children}
           </WebSocketProvider>
-          {/*{isDev && (*/}
-          {/*  <SettingDrawer*/}
-          {/*    disableUrlParams*/}
-          {/*    enableDarkTheme*/}
-          {/*    settings={initialState?.settings}*/}
-          {/*    onSettingChange={(settings) => {*/}
-          {/*      setInitialState((preInitialState) => ({*/}
-          {/*        ...preInitialState,*/}
-          {/*        settings,*/}
-          {/*      }));*/}
-          {/*    }}*/}
-          {/*  />*/}
-          {/*)}*/}
-        </>
+        </ConfigProvider>
       );
     },
     ...initialState?.settings,

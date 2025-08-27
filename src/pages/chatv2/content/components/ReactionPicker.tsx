@@ -11,16 +11,16 @@ const ReactionPicker: FC<ReactionPickerProps> = ({onSelect, onClose}) => {
 
   return (
     <Flex gap={4} style={{
-      position: 'absolute',
-      bottom: 25,
-      left: 0,
+      // position: 'absolute',
+      // bottom: 25,
+      // left: 0,
       // transform: 'translateX(55%)',
-      backgroundColor: 'white',
-      border: '1px solid #d9d9d9',
-      borderRadius: '20px',
-      padding: '5px',
-      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-      zIndex: 1000,
+      // backgroundColor: 'white',
+      // border: '1px solid #d9d9d9',
+      // borderRadius: '20px',
+      // padding: '5px',
+      // boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+      // zIndex: 1000,
     }}
     >
       {REACTIONS.map((emoji) => (

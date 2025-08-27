@@ -60,7 +60,8 @@ const ChatContent = () => {
     const req = visibleMessages?.filter(f => f.senderId !== currentUser?.userId && f.status === "SENT");
     if (req?.length > 0) {
       // @ts-ignore
-      markReadMessages(req.map(m => m.id)).then(()  => {})
+      markReadMessages(req.map(m => m.id)).then(() => {
+      })
 
     }
     console.log('visibleMessages', visibleMessages);
@@ -158,10 +159,10 @@ const ChatContent = () => {
   console.log("messages", messages)
   return (
     <div style={{
-      flex: 1,
+      height: '100%',
       display: 'flex',
       flexDirection: 'column',
-      width: isMobile ? '100%' : 'auto'
+      width: isMobile ? '100%' : '100%'
     }}>
       <ChatHeader
         conversation={activeConversation}
@@ -173,87 +174,86 @@ const ChatContent = () => {
         showInfoButton={!isMobile}
       />
 
-      {isMobile && !activeConversationId && (
-        <div style={{
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '20px'
-        }}>
-          <h3 style={{color: '#666', marginBottom: '16px'}}>Chào mừng đến với Chat!</h3>
-          <Button
-            type="primary"
-            onClick={() => setShowConversations(true)}
-          >
-            Chọn cuộc trò chuyện
-          </Button>
-        </div>
-      )}
+      {/*{isMobile && !activeConversationId && (*/}
+      {/*  <div style={{*/}
+      {/*    flex: 1,*/}
+      {/*    display: 'flex',*/}
+      {/*    flexDirection: 'column',*/}
+      {/*    alignItems: 'center',*/}
+      {/*    justifyContent: 'center',*/}
+      {/*    padding: '20px'*/}
+      {/*  }}>*/}
+      {/*    <h3 style={{color: '#666', marginBottom: '16px'}}>Chào mừng đến với Chat!</h3>*/}
+      {/*    <Button*/}
+      {/*      type="primary"*/}
+      {/*      onClick={() => setShowConversations(true)}*/}
+      {/*    >*/}
+      {/*      Chọn cuộc trò chuyện*/}
+      {/*    </Button>*/}
+      {/*  </div>*/}
+      {/*)}*/}
 
-      {activeConversationId && (
-        <>
-          <div
-            style={{
-              flex: 1,
-              overflowY: 'auto',
-              padding: '16px',
-              backgroundColor: '#fafafa',
-            }}
-          >
-            {
-              messages?.length > 0 &&
-
-              <Virtuoso
-                totalCount={messages?.length}
-                defaultItemHeight={100}
-                data={messages}
-                followOutput={(isAtBottom) => {
-                  return isAtBottom;
-                }}
-                rangeChanged={({startIndex, endIndex}) => handleRangeChanged(startIndex, endIndex)}
-                firstItemIndex={0}
-                initialTopMostItemIndex={messages.length - 1}
-                startReached={(index) => {
-                  handleFetchMoreMessages();
-                }}
-                itemContent={(index, message) => (
-                  <MessageBubble
-                    currentUserId={currentUser?.userId}
-                    key={message.id}
-                    message={message}
-                    allMessages={messages}
-                    onCopy={handleCopy}
-                    onEdit={(id) => alert(`Edit message: ${id}`)}
-                    onDelete={(id) => {
-                      alert(`Deleted message: ${id}`);
-                    }}
-                    onReply={handleReply}
-                    onReaction={handleReaction}
-                  />)}
-                components={{
-                  Header: () => {
-                    return (
-                      <Flex align="center" gap="middle" justify={"center"}>
-                        <Spin indicator={<LoadingOutlined spin={isLoading}/>}/>
-                      </Flex>
-                    )
+      <div style={{height: '100%', backgroundColor: '#f1f1f1', display: 'flex', flexDirection: 'column'}}>
+        {activeConversationId && (
+          <>
+              {
+                messages?.length > 0 &&
+                <Virtuoso
+                  totalCount={messages?.length}
+                  defaultItemHeight={100}
+                  data={messages}
+                  followOutput={(isAtBottom) => {
+                    return isAtBottom;
+                  }}
+                  rangeChanged={({startIndex, endIndex}) => handleRangeChanged(startIndex, endIndex)}
+                  firstItemIndex={0}
+                  initialTopMostItemIndex={messages.length - 1}
+                  startReached={(index) => {
+                    handleFetchMoreMessages();
+                  }}
+                  itemContent={(index, message) => (
+                    <MessageBubble
+                      currentUserId={currentUser?.userId}
+                      key={message.id}
+                      message={message}
+                      allMessages={messages}
+                      onCopy={handleCopy}
+                      onEdit={(id) => alert(`Edit message: ${id}`)}
+                      onDelete={(id) => {
+                        alert(`Deleted message: ${id}`);
+                      }}
+                      onReply={handleReply}
+                      onReaction={handleReaction}
+                    />)
                   }
-                }}
-              />
-            }
-            {/*<div ref={messagesEndRef}/>*/}
-          </div>
+                  components={{
+                    Header: () => {
+                      return (
+                        <Flex align="center" gap="middle" justify={"center"}>
+                          <Spin indicator={<LoadingOutlined spin={isLoading}/>}/>
+                        </Flex>
+                      )
+                    },
+                    // Scroller: React.forwardRef((props, ref) => (
+                    //   <div className="chat-scroll-wrapper" ref={ref} {...props} />
+                    // )),
+                    List: React.forwardRef((props, ref) => {
+                      return <div className={"message-list-container"} {...props} ref={ref} />
+                    })
+                  }}
+                />
+              }
 
-          <MessageInput
-            onSend={handleSendMessage}
-            disabled={!activeConversationId}
-            replyTo={replyTo}
-            onClearReply={handleClearReply}
-            onFileUpload={undefined}/>
-        </>
-      )}
+            <MessageInput
+              onSend={handleSendMessage}
+              disabled={!activeConversationId}
+              replyTo={replyTo}
+              onClearReply={handleClearReply}
+              onFileUpload={undefined}/>
+          </>
+        )}
+      </div>
+
     </div>
 
     //   {/* Info Sidebar */}

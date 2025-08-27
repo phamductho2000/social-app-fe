@@ -2,6 +2,7 @@ import Conversations from "@/pages/chatv2/sidebar";
 import ChatContent from "@/pages/chatv2/content";
 import {useState} from "react";
 import {Flex} from "antd";
+import ChatInfoSidebar from "@/pages/chatv2/sidebar/ChatInfoSidebar";
 
 export const mockUsers = [
   {
@@ -322,16 +323,18 @@ const ChatContainer = () => {
 
   return (
     <>
-      <div style={{backgroundColor: '#f5f5f5', minHeight: '100vh'}}>
+      <div style={{backgroundColor: '#f5f5f5', minHeight: '100vh', width: '100%'}}>
         <div style={{
           backgroundColor: 'white',
           boxShadow: isMobile ? 'none' : '0 2px 8px rgba(0,0,0,0.1)',
           overflow: 'hidden',
-          height: isMobile ? '100vh' : '100vh'
+          height: isMobile ? '100vh' : '100vh',
+          width: isMobile ? '100%' : '100%'
         }}>
-          <Flex style={{height: '100%'}}>
+          <Flex style={{height: '100%', width: '100%'}}>
             <Conversations/>
             <ChatContent/>
+            {/*<ChatInfoSidebar conversation={{}} isVisible={true}/>*/}
           </Flex>
         </div>
       </div>

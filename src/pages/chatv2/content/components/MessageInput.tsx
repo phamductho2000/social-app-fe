@@ -1,9 +1,9 @@
 import React, {FC, useState} from "react";
-import {Button} from "antd";
+import {Button, Input} from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import {AttachIcon, EmojiIcon, SendIcon} from "@/components/Icon";
 import ReplyPreview from "@/pages/chatv2/content/components/ReplyPreview";
-
+import SentimentSatisfiedOutlinedIcon from '@mui/icons-material/SentimentSatisfiedOutlined';
 type MessageInputProps = {
   onSend: (message: string, replyToId?: string) => void;
   onFileUpload: () => void;
@@ -39,7 +39,7 @@ const MessageInput: FC<MessageInputProps> = ({
   };
 
   return (
-    <div>
+    <div style={{ maxWidth: 800, margin: '0 auto', width: '100%' }}>
       <ReplyPreview replyTo={replyTo} onClose={onClearReply}/>
       <div style={{padding: '12px', borderTop: '1px solid #f0f0f0'}}>
         <div style={{display: 'flex', alignItems: 'flex-end', gap: '8px'}}>
@@ -48,12 +48,13 @@ const MessageInput: FC<MessageInputProps> = ({
             disabled={disabled}
           />
 
-          <TextArea
+          <Input
+            prefix={<SentimentSatisfiedOutlinedIcon fontWeight={200}/>}
+            size="large"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder={replyTo ? `Trả lời ${replyTo.sender.name}...` : placeholder}
-            rows={1}
             disabled={disabled}
             style={{flex: 1}}
           />

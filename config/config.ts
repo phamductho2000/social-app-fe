@@ -37,11 +37,16 @@ export default defineConfig({
    * @doc antd的主题设置 https://ant.design/docs/react/customize-theme-cn
    * @doc umi 的theme 配置 https://umijs.org/docs/api/config#theme
    */
-  theme: {
-    // 如果不想要 configProvide 动态设置主题需要把这个设置为 default
-    // 只有设置为 variable， 才能使用 configProvide 动态设置主色调
-    'root-entry-name': 'variable',
-  },
+  // theme: {
+  //   components: {
+  //     Menu: {
+  //       itemHoverBg: '#fffff',
+  //       itemSelectedBg: '#fffff',
+  //       itemColor: '#fffff',
+  //       itemSelectedColor: '#fffff',
+  //     },
+  //   },
+  // },
   /**
    * @name moment 的国际化配置
    * @description 如果对国际化没有要求，打开之后能减少js的包大小
@@ -97,7 +102,7 @@ export default defineConfig({
    */
   locale: {
     // default zh-CN
-    default: 'zh-CN',
+    default: 'vi-VN',
     antd: true,
     // default true, when it is true, will use `navigator.language` overwrite default
     baseNavigator: true,
