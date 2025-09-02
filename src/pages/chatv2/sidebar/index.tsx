@@ -42,7 +42,7 @@ const Conversations = () => {
 
   return (
     <div style={{
-      width: isMobile ? '100%' : '400px',
+      width: isMobile ? '100%' : '800px',
       borderRight: isMobile ? 'none' : '1px solid #f0f0f0',
       position: isMobile ? 'absolute' : 'relative',
       top: 0,

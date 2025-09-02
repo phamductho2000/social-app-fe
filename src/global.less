@@ -37,104 +37,17 @@ body,
   margin: 0 auto !important;
   overflow-x: hidden;
 }
-//.colorWeak {
-//  filter: invert(80%);
-//}
-//
-//.ant-layout {
-//  min-height: 100vh;
-//}
-//.ant-pro-sider.ant-layout-sider.ant-pro-sider-fixed {
-//  left: unset;
-//}
-//
-//canvas {
-//  display: block;
-//}
-//
-//body {
-//  text-rendering: optimizeLegibility;
-//  -webkit-font-smoothing: antialiased;
-//  -moz-osx-font-smoothing: grayscale;
-//}
-//
-//ul,
-//ol {
-//  list-style: none;
-//}
-//
-//@media (max-width: 768px) {
-//  .ant-table {
-//    width: 100%;
-//    overflow-x: auto;
-//    &-thead > tr,
-//    &-tbody > tr {
-//      > th,
-//      > td {
-//        white-space: pre;
-//        > span {
-//          display: block;
-//        }
-//      }
-//    }
-//  }
-//}
-//
-////.ant-pro-global-header {
-////  background-color: #ffff;
-////}
-//
-////.ant-menu-light:not(.ant-menu-horizontal),
-////.ant-menu-item:not(.ant-menu-item-selected):active,
-////.ant-menu-light > .ant-menu:not(.ant-menu-horizontal),
-////.ant-menu-item:not(.ant-menu-item-selected):active {
-////    background-color: #127ba4 !important;
-////    color: #ffff;
-////}
-//
-////.ant-menu-light:not(.ant-menu-horizontal) .ant-menu-item:not(.ant-menu-item-selected):active {
-////    background-color: #127ba4 !important;
-////    color: #ffff;
-////}
-////
-////.ant-menu-light .ant-menu-item-selected {
-////    background-color: #127ba4 !important;
-////}
-//
-//.ant-layout-sider-children {
-//  background-color: #ffff !important;
-//}
-//
-//.ant-menu-title-content, .ant-form-item-label label {
-//  font-weight: 600 !important;
-//  color: #18181b !important;
-//}
-//
-//.quill .ql-container {
-//  border-bottom-left-radius: 0.5em;
-//  border-bottom-right-radius: 0.5em;
-//  background: #ffffff;
-//}
-//
-///* Snow Theme */
-//.quill .ql-snow.ql-toolbar {
-//  display: block;
-//  background: #eaecec;
-//  border-top-left-radius: 0.5em;
-//  border-top-right-radius: 0.5em;
-//}
-//
-///* Bubble Theme */
-//.quill .ql-bubble .ql-editor {
-//  border: 1px solid #ccc;
-//  border-radius: 0.5em;
-//}
-//
-//.quill .ql-editor {
-//  min-height: 18em;
-//}
-//
-//.themeSwitcher {
-//  margin-top: 0.5em;
-//  font-size: small;
-//}
+.ant-input-affix-wrapper >input.ant-input::placeholder {
+  font-weight: 600;
+}
+
+.reply-message::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  inset-inline-start: 0;
+  display: block;
+  width: .1875rem;
+  background: #46BA43;
+}

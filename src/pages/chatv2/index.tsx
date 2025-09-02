@@ -334,7 +334,7 @@ const ChatContainer = () => {
           <Flex style={{height: '100%', width: '100%'}}>
             <Conversations/>
             <ChatContent/>
-            {/*<ChatInfoSidebar conversation={{}} isVisible={true}/>*/}
+            <ChatInfoSidebar conversation={{}} isVisible={true}/>
           </Flex>
         </div>
       </div>

@@ -1,9 +1,13 @@
 import React, {FC, useState} from "react";
-import {Button, Input} from "antd";
-import TextArea from "antd/lib/input/TextArea";
-import {AttachIcon, EmojiIcon, SendIcon} from "@/components/Icon";
+import {Button, Flex, Input} from "antd";
 import ReplyPreview from "@/pages/chatv2/content/components/ReplyPreview";
 import SentimentSatisfiedOutlinedIcon from '@mui/icons-material/SentimentSatisfiedOutlined';
+import SendIcon from '@mui/icons-material/Send';
+import AttachFileOutlinedIcon from '@mui/icons-material/AttachFileOutlined';
+import {SendOutlined} from "@ant-design/icons";
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import ReplyOutlinedIcon from '@mui/icons-material/ReplyOutlined';
+
 type MessageInputProps = {
   onSend: (message: string, replyToId?: string) => void;
   onFileUpload: () => void;
@@ -39,36 +43,41 @@ const MessageInput: FC<MessageInputProps> = ({
   };
 
   return (
-    <div style={{ maxWidth: 800, margin: '0 auto', width: '100%' }}>
-      <ReplyPreview replyTo={replyTo} onClose={onClearReply}/>
-      <div style={{padding: '12px', borderTop: '1px solid #f0f0f0'}}>
-        <div style={{display: 'flex', alignItems: 'flex-end', gap: '8px'}}>
-          <Button
-            icon={<AttachIcon/>}
-            disabled={disabled}
-          />
+    <div style={{maxWidth: 800, margin: '0 auto', width: '100%'}}>
 
-          <Input
-            prefix={<SentimentSatisfiedOutlinedIcon fontWeight={200}/>}
-            size="large"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder={replyTo ? `Trả lời ${replyTo.sender.name}...` : placeholder}
-            disabled={disabled}
-            style={{flex: 1}}
-          />
 
-          <Button icon={<EmojiIcon/>} disabled={disabled}/>
+      <Flex style={{marginTop: 10, marginBottom: 20}} gap={10} align={"center"}>
+        <Flex gap={15} vertical style={{backgroundColor: '#ffffff', width: '100%', borderRadius: 15,  padding: 10}}>
+          <ReplyPreview replyTo={replyTo} />
+          <Flex align={"center"} gap={10} style={{width: '100%'}}>
+            <SentimentSatisfiedOutlinedIcon/>
+            <Input
+              variant={'borderless'}
+              size="large"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder={replyTo ? `Trả lời ${replyTo.sender.name}...` : placeholder}
+              disabled={disabled}
+              style={{padding: 0, borderRadius: 0, flex: 1}}
+            />
+            <AttachFileOutlinedIcon/>
+          </Flex>
 
-          <Button
-            type="primary"
-            icon={<SendIcon/>}
-            onClick={handleSend}
-            disabled={disabled || !message.trim()}
-          />
-        </div>
-      </div>
+        </Flex>
+
+
+        {/*<Button icon={<EmojiIcon/>} disabled={disabled}/>*/}
+
+        <Button
+          size={"large"}
+          shape={"circle"}
+          type="primary"
+          icon={<SendOutlined/>}
+          onClick={handleSend}
+          disabled={disabled || !message.trim()}
+        />
+      </Flex>
     </div>
   );
 };

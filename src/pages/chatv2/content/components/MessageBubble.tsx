@@ -13,7 +13,7 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import ForwardOutlinedIcon from '@mui/icons-material/ForwardOutlined';
 import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
-
+import DoneAllOutlinedIcon from '@mui/icons-material/DoneAllOutlined';
 type Message = API.MessageResDTO & {
   isOwn: boolean
 };
@@ -49,7 +49,6 @@ const MessageBubble: FC<MessageBubbleProps> = ({
         onSelect={handleReactionSelect}
         onClose={() => setShowReactionPicker(false)}
       />,
-      // icon: <EmojiIcon/>,
       onClick: () => {
         setShowReactionPicker(true);
         setShowMenu(false);
@@ -60,10 +59,6 @@ const MessageBubble: FC<MessageBubbleProps> = ({
       type: 'divider',
     },
     {
-      //  style: {
-      //   margin: 10,
-      //   fontSize: 16
-      // },
       key: '2',
       label: 'Trả lời',
       icon: <ReplyOutlinedIcon/>,
@@ -254,27 +249,11 @@ const MessageBubble: FC<MessageBubbleProps> = ({
 
 
         <Dropdown popupRender={(menu) => (
-          // <Popover
-          //   content={
-          //
-          //     <ReactionPicker
-          //       onSelect={handleReactionSelect}
-          //       onClose={() => setShowReactionPicker(false)}
-          //     />
-          //   }
-          // trigger="click"
-          // trigger="click"
-          // open={showReactionPicker} // Thêm prop open để control
-          // onOpenChange={(visible) => setShowReactionPicker(visible)}
-          // onOpenChange={handleClickChange}
-          // >
           <Menu
             style={{width: 150, fontSize: 16}}
             mode="vertical"
             items={items}
-          />
-          // </Popover>
-        )}
+          />)}
                   trigger={['contextMenu']}
                   onOpenChange={(open) => {
                     setShowMenu(open);
@@ -309,7 +288,7 @@ const MessageBubble: FC<MessageBubbleProps> = ({
                 {dayjs(message?.sentAt)?.format("HH:mm")}
                 {isOwn && message?.status && (
                   <span style={{marginLeft: 4}}>
-                  {message?.status === 'READ' ? '✓✓' : message.status === 'SENT' ? '✓' : '○'}
+                  {message?.status === 'READ' ? <DoneAllOutlinedIcon style={{fontSize: 16}}/> : message.status === 'SENT' ? '✓' : '○'}
                 </span>
                 )}
               </div>
@@ -320,7 +299,7 @@ const MessageBubble: FC<MessageBubbleProps> = ({
                 {dayjs(message?.sentAt)?.format("HH:mm")}
                 {isOwn && message?.status && (
                   <span style={{marginLeft: 4}}>
-                  {message?.status === 'READ' ? '✓✓' : message.status === 'SENT' ? '✓' : '○'}
+                  {message?.status === 'READ' ? <DoneAllOutlinedIcon style={{fontSize: 16}}/> : message.status === 'SENT' ? '✓' : '○'}
                 </span>
                 )}
               </div>

@@ -1,28 +1,28 @@
-import {CloseIcon} from "@/components/Icon";
-import {FC} from "react";
-import {Button} from "antd";
+import React, {FC} from "react";
+import {Flex} from "antd";
+import ReplyOutlinedIcon from "@mui/icons-material/ReplyOutlined";
+import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 
 type ReplyPreviewProps = {
-  replyTo: API.MessageResDTO;
-  onClose: () => void;
+  replyTo?: API.MessageResDTO;
 }
-const ReplyPreview: FC<ReplyPreviewProps> = ({ replyTo, onClose }) => {
+const ReplyPreview: FC<ReplyPreviewProps> = ({replyTo, onClose}) => {
   if (!replyTo) return null;
 
   return (
-    <div style={{
-      backgroundColor: '#f0f0f0',
-      border: '1px solid #d9d9d9',
-      borderRadius: '6px',
-      padding: '8px 12px',
-      margin: '8px 16px 0',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-    }}>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: '12px', color: '#666', marginBottom: '2px' }}>
-          Trả lời {replyTo.sender.name}
+    <Flex align={"center"} gap={10} style={{width: '100%'}}>
+      <ReplyOutlinedIcon style={{color: '#46BA43'}}/>
+      <Flex gap={1} vertical className={"reply-message"}
+            style={{
+              backgroundColor: '#46BA431a',
+              borderRadius: '6px',
+              position: 'relative',
+              paddingLeft: 10,
+              width: '100%'
+            }}>
+        <div style={{color: '#46BA43', fontWeight: 500}}>
+          {/*Trả lời {replyTo.sender.name}*/}
+          Thọ Phạm
         </div>
         <div style={{
           fontSize: '14px',
@@ -31,24 +31,13 @@ const ReplyPreview: FC<ReplyPreviewProps> = ({ replyTo, onClose }) => {
           textOverflow: 'ellipsis',
           whiteSpace: 'nowrap',
         }}>
-          {replyTo.content}
+          {/*{replyTo.content}*/}
+          Hehe chào m
         </div>
-      </div>
-      <Button
-        size={"small"}
-        onClick={onClose}
-        style={{
-          background: 'none',
-          border: 'none',
-          cursor: 'pointer',
-          padding: '4px',
-          color: '#666',
-          marginLeft: '8px',
-        }}
-      >
-        <CloseIcon />
-      </Button>
-    </div>
+      </Flex>
+      <CloseOutlinedIcon style={{color: '#46BA43'}}/>
+    </Flex>
+
   );
 };
 export default ReplyPreview;
