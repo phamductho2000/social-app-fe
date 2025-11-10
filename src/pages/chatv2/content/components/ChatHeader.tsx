@@ -11,6 +11,7 @@ import NotificationsOffOutlinedIcon from '@mui/icons-material/NotificationsOffOu
 import BlockOutlinedIcon from '@mui/icons-material/BlockOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
+import ViewSidebarOutlinedIcon from '@mui/icons-material/ViewSidebarOutlined';
 
 type ChatHeaderProps = {
   conversation?: API.UserConversationResDTO;
@@ -128,6 +129,12 @@ const ChatHeader: FC<ChatHeaderProps> = ({
               type="text"
               icon={<VideocamOutlinedIcon/>}
               onClick={onVideoCall}
+            />
+            <Button
+              type="text"
+              shape={"circle"}
+              icon={<ViewSidebarOutlinedIcon/>}
+              // onClick={() => setIsSearch(true)}
             />
             <Dropdown menu={{items}} trigger={['click']} placement={"bottomRight"}>
               <Button

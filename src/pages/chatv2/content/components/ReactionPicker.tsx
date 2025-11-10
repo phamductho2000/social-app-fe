@@ -7,7 +7,8 @@ type ReactionPickerProps = {
 }
 const ReactionPicker: FC<ReactionPickerProps> = ({onSelect, onClose}) => {
 
-  const REACTIONS = ['👍', '❤️', '😂', '😮', '😢', '😡'];
+  // const REACTIONS = ['👍', '❤️', '😂', '😮', '😢', '😡'];
+  const REACTIONS = ['👍', '❤️', '😂'];
 
   return (
     <Flex gap={4} style={{

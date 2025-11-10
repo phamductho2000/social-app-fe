@@ -33,11 +33,17 @@ body,
 }
 
 .message-list-container {
-  max-width: 800px !important;
-  margin: 0 auto !important;
   overflow-x: hidden;
+  position: relative;
 }
-.ant-input-affix-wrapper >input.ant-input::placeholder {
+
+.message-list {
+  max-width: 45.5rem !important;
+  margin: 0 auto !important;
+  position: relative;
+}
+
+.ant-input-affix-wrapper > input.ant-input::placeholder {
   font-weight: 600;
 }
 
@@ -50,4 +56,28 @@ body,
   display: block;
   width: .1875rem;
   background: #46BA43;
+}
+
+.conversation-item:hover {
+  background-color: #ededed !important;
+}
+
+.chat-scroll-wrapper {
+  pointer-events: auto;
+  scrollbar-color: #ddd transparent;
+  scrollbar-width: thin;
+  transition: scrollbar-color 0.3s;
+}
+
+.message-item.has-menu-open::before {
+  opacity: .55 !important;
+  background-color: #4A8E3A8C !important;
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: -0.1875rem;
+  right: -50vw;
+  bottom: -0.1875rem;
+  left: -50vw;
+  transition: opacity 200ms ease-out;
 }

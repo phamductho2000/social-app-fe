@@ -8,7 +8,7 @@ export default () => {
 
   const [infoConversation, setInfoConversation] = useState();
 
-  const [messageReply, setMessageReply] = useState<API.MessageResDTO>()
+  const [embeddedMessage, setEmbeddedMessage] = useState<API.MessageResDTO>()
 
   const updateInfoConversation = (info: any) => {
     setInfoConversation(info);
@@ -22,14 +22,17 @@ export default () => {
     setSelectedUsers([...selectedUsers, user]);
   }
 
-  const updateMessageReply = (msg: API.MessageResDTO | undefined) => {
-    setMessageReply(msg);
+  const updateEmbeddedMessage = (msg: API.MessageResDTO | undefined, action?: string | undefined) => {
+    setEmbeddedMessage(msg ? {
+      ...msg,
+      action: action,
+    } : undefined);
   }
 
   return {
     selectedUsers, updateSelectedUsers,
     reloadConversation, updateReloadConversation,
     infoConversation, updateInfoConversation,
-    messageReply, updateMessageReply
+    embeddedMessage, updateEmbeddedMessage
   }
 }

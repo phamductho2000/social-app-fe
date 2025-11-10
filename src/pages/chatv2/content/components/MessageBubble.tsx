@@ -1,5 +1,5 @@
 import {FC, useState} from "react";
-import {Avatar, Dropdown, Menu, MenuProps, Popover} from "antd";
+import {Avatar, Dropdown, Flex, Menu, MenuProps} from "antd";
 import MessageReactions from "@/pages/chatv2/content/components/MessageReactions";
 import ReactionPicker from "@/pages/chatv2/content/components/ReactionPicker";
 import ImageMessage from "@/pages/chatv2/content/components/ImageMessage";
@@ -14,6 +14,11 @@ import ForwardOutlinedIcon from '@mui/icons-material/ForwardOutlined';
 import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import DoneAllOutlinedIcon from '@mui/icons-material/DoneAllOutlined';
+import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye';
+import DoneIcon from '@mui/icons-material/Done';
+import PushPinIcon from '@mui/icons-material/PushPin';
+import EmbeddedMessage from "@/pages/chatv2/content/components/EmbeddedMessage";
+
 type Message = API.MessageResDTO & {
   isOwn: boolean
 };
@@ -22,7 +27,8 @@ type MessageBubbleProps = {
   currentUserId?: string,
   message: Message,
   onDelete: (messageId: string | undefined) => void,
-  onEdit: (messageId: string) => void,
+  onEdit: (message: API.MessageResDTO) => void,
+  onPin: (message: API.MessageResDTO) => void,
   onCopy: (content: any) => void,
   onReply: (message: API.MessageResDTO) => void,
   onReaction: (messageId: string, emoji: string) => void,
@@ -33,6 +39,7 @@ const MessageBubble: FC<MessageBubbleProps> = ({
                                                  message,
                                                  onDelete,
                                                  onEdit,
+                                                 onPin,
                                                  onCopy,
                                                  onReply,
                                                  onReaction,
@@ -51,7 +58,6 @@ const MessageBubble: FC<MessageBubbleProps> = ({
       />,
       onClick: () => {
         setShowReactionPicker(true);
-        setShowMenu(false);
       },
       className: "no-hover"
     },
@@ -69,7 +75,10 @@ const MessageBubble: FC<MessageBubbleProps> = ({
     {
       key: '3',
       label: 'Chỉnh sửa',
-      icon: <EditOutlinedIcon/>
+      icon: <EditOutlinedIcon/>,
+      onClick: () => {
+        onEdit?.(message);
+      }
     },
     {
       key: '4',
@@ -84,7 +93,7 @@ const MessageBubble: FC<MessageBubbleProps> = ({
       label: 'Ghim',
       icon: <PushPinOutlinedIcon/>,
       onClick: () => {
-        onCopy?.(message.content);
+        onPin?.(message);
       }
     },
     {
@@ -113,11 +122,8 @@ const MessageBubble: FC<MessageBubbleProps> = ({
     }
   ];
 
-  console.log('showMenu', showMenu)
-
   const handleContextMenu = (e) => {
     e.preventDefault();
-    // setShowMenu(!showMenu);
   };
 
   const handleReactionSelect = (emoji: string) => {
@@ -204,107 +210,101 @@ const MessageBubble: FC<MessageBubbleProps> = ({
   };
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: isOwn ? 'flex-end' : 'flex-start',
-        marginBottom: 15,
-        position: 'relative',
-      }}
+    <Flex className={showMenu ? "message-item has-menu-open" : "message-item"}
+          justify={isOwn ? 'flex-end' : 'flex-start'} align={'baseline'}
+          style={{
+            marginBottom: 15,
+            position: 'relative'
+          }}
     >
       {!isOwn && (
         <Avatar
-          size={32}
-          src={message?.sender?.avatar}
+          size={36}
+          src={message?.avatar}
           style={{marginRight: 8}}
         />
       )}
 
       <div style={{maxWidth: '70%', position: 'relative'}}>
-        {replyToMessage && (
-          <div style={{
-            backgroundColor: isOwn ? 'rgba(255,255,255,0.2)' : '#e6f7ff',
-            border: `2px solid ${isOwn ? 'rgba(255,255,255,0.3)' : '#1890ff'}`,
-            borderRadius: '6px',
-            padding: '4px 8px',
-            marginBottom: '4px',
-            fontSize: '12px',
-          }}>
-            <div style={{
-              color: isOwn ? 'rgba(255,255,255,0.8)' : '#666',
-              marginBottom: '2px'
-            }}>
-              {replyToMessage.sender.name}
-            </div>
-            <div style={{
-              color: isOwn ? 'rgba(255,255,255,0.9)' : '#333',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-            }}>
-              {replyToMessage.content}
-            </div>
-          </div>
-        )}
-
-
         <Dropdown popupRender={(menu) => (
           <Menu
-            style={{width: 150, fontSize: 16}}
+            style={{width: 200, fontSize: 16}}
             mode="vertical"
             items={items}
           />)}
                   trigger={['contextMenu']}
                   onOpenChange={(open) => {
                     setShowMenu(open);
-                    // Đóng popover khi dropdown đóng
                     setShowReactionPicker(open);
-
                   }}
         >
-          <div
-            onContextMenu={handleContextMenu}
-            style={{
-              display: 'flex',
-              justifyContent: 'flex-start',
-              gap: '8px',
-              padding: '8px 12px',
-              borderRadius: isOwn ? '12px 12px 4px 12px' : '12px 12px 12px 4px',
-              backgroundColor: isOwn ? '#EEFFDE' : '#ffffff',
-              color: isOwn ? 'black' : 'black',
-              position: 'relative',
-              cursor: 'pointer',
-              width: 'fit-content'
-            }}
+          <Flex vertical justify={'flex-start'} gap={10}
+                onContextMenu={handleContextMenu}
+                style={{
+                  padding: '8px 12px',
+                  borderRadius: isOwn ? '12px 12px 4px 12px' : '12px 12px 12px 4px',
+                  backgroundColor: isOwn ? '#EEFFDE' : '#ffffff',
+                  color: isOwn ? 'black' : 'black',
+                  position: 'relative',
+                  cursor: 'pointer',
+                  width: '100%',
+
+                }}
           >
-            {renderMessageContent()}
-            <div
-              style={{
-                fontSize: "11px",
-                color: "#777",
-              }}
-            >
-              <div style={{visibility: 'hidden'}}>
-                {dayjs(message?.sentAt)?.format("HH:mm")}
-                {isOwn && message?.status && (
-                  <span style={{marginLeft: 4}}>
-                  {message?.status === 'READ' ? <DoneAllOutlinedIcon style={{fontSize: 16}}/> : message.status === 'SENT' ? '✓' : '○'}
+            <EmbeddedMessage message={message?.replyTo} isView={true}/>
+            <Flex style={{width: '100%'}} gap={10}>
+              {renderMessageContent()}
+              <div
+                style={{
+                  fontSize: "11px",
+                  color: "#777",
+                }}
+              >
+                <div style={{visibility: 'hidden'}}>
+                  {message?.pinned && <PushPinIcon/>}
+                  {message?.edited && 'edited'}
+                  {dayjs(message?.sentAt)?.format("HH:mm")}
+                  {isOwn && message?.status && (
+                    <span>
+                  {message?.status === 'READ' ?
+                    <DoneAllOutlinedIcon style={{fontSize: 16, color: '#46BA43'}}/> : message.status === 'SENT' ?
+                      <DoneIcon style={{fontSize: 16, color: '#46BA43'}}/> : <PanoramaFishEyeIcon/>}
                 </span>
-                )}
-              </div>
-              <div style={{
-                bottom: 3,
-                position: 'absolute',
-              }}>
-                {dayjs(message?.sentAt)?.format("HH:mm")}
-                {isOwn && message?.status && (
-                  <span style={{marginLeft: 4}}>
-                  {message?.status === 'READ' ? <DoneAllOutlinedIcon style={{fontSize: 16}}/> : message.status === 'SENT' ? '✓' : '○'}
+                  )}
+                </div>
+                <Flex gap={2} align={'normal'} style={{
+                  right: 5,
+                  bottom: 2,
+                  position: 'absolute',
+                  alignItems: 'center'
+                }}>
+                  {
+                    message?.pinned &&
+                    <PushPinIcon fontSize={'inherit'} color={'inherit'}/>
+                  }
+                  {
+                    message?.edited &&
+                    <span style={{color: '#46BA43'}}>
+                      {'edited'}
+                    </span>
+                  }
+
+                  <span style={{color: '#46BA43'}}>
+                    {dayjs(message?.sentAt)?.format("HH:mm")}
+                  </span>
+
+                  {isOwn && message?.status && (
+                    <span>
+                  {message?.status === 'READ' ?
+                    <DoneAllOutlinedIcon style={{fontSize: 16, color: '#46BA43'}}/> : message.status === 'SENT' ?
+                      <DoneIcon style={{fontSize: 16, color: '#46BA43'}}/> : <PanoramaFishEyeIcon/>}
                 </span>
-                )}
+                  )}
+                </Flex>
               </div>
-            </div>
-          </div>
+            </Flex>
+
+          </Flex>
         </Dropdown>
 
         <MessageReactions
@@ -312,32 +312,8 @@ const MessageBubble: FC<MessageBubbleProps> = ({
           onReactionClick={handleReactionClick}
           onAddReaction={() => setShowReactionPicker(true)}
         />
-
-        {/*{showReactionPicker && (*/}
-        {/*  <ReactionPicker*/}
-        {/*    onSelect={handleReactionSelect}*/}
-        {/*    onClose={() => setShowReactionPicker(false)}*/}
-        {/*  />*/}
-        {/*)}*/}
-
-        {/*<div*/}
-        {/*  style={{*/}
-        {/*    fontSize: '12px',*/}
-        {/*    color: '#999',*/}
-        {/*    marginTop: 4,*/}
-        {/*    // textAlign: isOwn ? 'right' : 'left',*/}
-        {/*    textAlign: 'right',*/}
-        {/*  }}*/}
-        {/*>*/}
-        {/*  {dayjs(message?.sentAt)?.format("HH:mm")}*/}
-        {/*  {isOwn && message?.status && (*/}
-        {/*    <span style={{marginLeft: 4}}>*/}
-        {/*      {message?.status === 'READ' ? '✓✓' : message.status === 'SENT' ? '✓' : '○'}*/}
-        {/*    </span>*/}
-        {/*  )}*/}
-        {/*</div>*/}
       </div>
-    </div>
+    </Flex>
   )
     ;
 };

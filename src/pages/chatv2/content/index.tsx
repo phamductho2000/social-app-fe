@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import MessageBubble from "@/pages/chatv2/content/components/MessageBubble";
-import {Button, Flex, Spin} from "antd";
+import {Flex, Spin} from "antd";
 import MessageInput from "@/pages/chatv2/content/components/MessageInput";
 import ChatHeader from "@/pages/chatv2/content/components/ChatHeader";
 import {useModel} from "@umijs/max";
@@ -8,17 +8,24 @@ import {useWebSocket} from "@/hooks/useWebSocket";
 import {useCurrentUser} from "@/selectors/useCurrentUser";
 import {Virtuoso} from "react-virtuoso";
 import {LoadingOutlined} from "@ant-design/icons";
-import {TOPIC_CONNECT_CONVERSATION, TOPIC_MESSAGE_REACT, TOPIC_MESSAGE_SEND} from "@/core/constant";
+import {
+  TOPIC_CONNECT_CONVERSATION,
+  TOPIC_MESSAGE_EDIT,
+  TOPIC_MESSAGE_PIN,
+  TOPIC_MESSAGE_REACT,
+  TOPIC_MESSAGE_SEND
+} from "@/core/constant";
 import {markReadMessages} from "@/services/message/messageController";
+import background from "../../../../public/background.jpg";
 
 const ChatContent = () => {
   const [activeConversationId, setActiveConversationId] = useState('1');
-  const [replyTo, setReplyTo] = useState<API.MessageResDTO | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [showConversations, setShowConversations] = useState(false);
   const [showInfoSidebar, setShowInfoSidebar] = useState(false);
   const currentUser = useCurrentUser();
   const {messages, handleNewMessage, fetchMessages, isLoading, total} = useModel("message");
+  const {embeddedMessage, updateEmbeddedMessage} = useModel("chat");
   const {activeConversation} = useModel("conversation");
   const {subscribe, send} = useWebSocket();
   const [visibleRange, setVisibleRange] = useState({
@@ -26,8 +33,6 @@ const ChatContent = () => {
     endIndex: 0,
   })
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  console.log('visibleRange', visibleRange)
 
   // useEffect(() => {
   //   if (visibleRange?.startIndex === 0) {
@@ -102,7 +107,7 @@ const ChatContent = () => {
   }, [messages]);
 
 
-  const handleSendMessage = (content: string, replyToId?: string) => {
+  const handleSendMessage = (content: string, embeddedMessage?: any) => {
     const newMessage: any = {
       tempId: Date.now().toString(),
       conversationId: activeConversation?.conversationId,
@@ -113,12 +118,19 @@ const ChatContent = () => {
       sentAt: new Date(),
       isOwn: true,
       status: 'SENDING',
-      replyTo: replyToId,
+      replyTo: embeddedMessage,
     };
 
     handleNewMessage(newMessage);
 
     send(TOPIC_MESSAGE_SEND + activeConversation?.conversationId, newMessage)
+  };
+
+  const handleEditMessage = (content: string, embeddedMessage: any) => {
+    if (embeddedMessage) {
+      embeddedMessage.content = content;
+      send(TOPIC_MESSAGE_EDIT + activeConversation?.conversationId, embeddedMessage)
+    }
   };
 
   const handleReaction = (messageId: string, emoji: string) => {
@@ -144,11 +156,21 @@ const ChatContent = () => {
   };
 
   const handleReply = (message: API.MessageResDTO) => {
-    setReplyTo(message);
+    updateEmbeddedMessage(message, "REPLY");
   };
 
-  const handleClearReply = () => {
-    setReplyTo(null);
+  const handleEdit = (message: API.MessageResDTO) => {
+    updateEmbeddedMessage(message, "EDIT");
+  };
+
+  const handlePin = (message: any) => {
+    if (message) {
+      send(TOPIC_MESSAGE_PIN + activeConversation?.conversationId, embeddedMessage)
+    }
+  };
+
+  const handleClearEmbeddedMessage = () => {
+    updateEmbeddedMessage(undefined);
   };
 
   const handleCopy = (content: string) => {
@@ -162,7 +184,7 @@ const ChatContent = () => {
       height: '100%',
       display: 'flex',
       flexDirection: 'column',
-      width: isMobile ? '100%' : '100%'
+      width: isMobile ? '100%' : '100%',
     }}>
       <ChatHeader
         conversation={activeConversation}
@@ -193,63 +215,74 @@ const ChatContent = () => {
       {/*  </div>*/}
       {/*)}*/}
 
-      <div style={{height: '100%', backgroundColor: '#f1f1f1', display: 'flex', flexDirection: 'column'}}>
+      <div style={{
+        height: '100%',
+        backgroundColor: '#f1f1f1',
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundImage: `url(${background})`
+      }}>
         {activeConversationId && (
           <>
-              {
-                messages?.length > 0 &&
-                <Virtuoso
-                  totalCount={messages?.length}
-                  defaultItemHeight={100}
-                  data={messages}
-                  followOutput={(isAtBottom) => {
-                    return isAtBottom;
-                  }}
-                  rangeChanged={({startIndex, endIndex}) => handleRangeChanged(startIndex, endIndex)}
-                  firstItemIndex={0}
-                  initialTopMostItemIndex={messages.length - 1}
-                  startReached={(index) => {
-                    handleFetchMoreMessages();
-                  }}
-                  itemContent={(index, message) => (
-                    <MessageBubble
-                      currentUserId={currentUser?.userId}
-                      key={message.id}
-                      message={message}
-                      allMessages={messages}
-                      onCopy={handleCopy}
-                      onEdit={(id) => alert(`Edit message: ${id}`)}
-                      onDelete={(id) => {
-                        alert(`Deleted message: ${id}`);
-                      }}
-                      onReply={handleReply}
-                      onReaction={handleReaction}
-                    />)
-                  }
-                  components={{
-                    Header: () => {
-                      return (
-                        <Flex align="center" gap="middle" justify={"center"}>
-                          <Spin indicator={<LoadingOutlined spin={isLoading}/>}/>
-                        </Flex>
-                      )
-                    },
-                    // Scroller: React.forwardRef((props, ref) => (
-                    //   <div className="chat-scroll-wrapper" ref={ref} {...props} />
-                    // )),
-                    List: React.forwardRef((props, ref) => {
-                      return <div className={"message-list-container"} {...props} ref={ref} />
-                    })
-                  }}
-                />
-              }
+            {
+              messages?.length > 0 &&
+              <Virtuoso
+                totalCount={messages?.length}
+                defaultItemHeight={100}
+                data={messages}
+                followOutput={(isAtBottom) => {
+                  return isAtBottom;
+                }}
+                rangeChanged={({startIndex, endIndex}) => handleRangeChanged(startIndex, endIndex)}
+                firstItemIndex={0}
+                initialTopMostItemIndex={messages.length - 1}
+                startReached={(index) => {
+                  handleFetchMoreMessages();
+                }}
+                itemContent={(index, message) => (
+                  <MessageBubble
+                    currentUserId={currentUser?.userId}
+                    key={message.id}
+                    message={message}
+                    allMessages={messages}
+                    onCopy={handleCopy}
+                    onEdit={handleEdit}
+                    onPin={handlePin}
+                    onDelete={(id) => {
+                      alert(`Deleted message: ${id}`);
+                    }}
+                    onReply={handleReply}
+                    onReaction={handleReaction}
+                  />)
+                }
+                components={{
+                  Header: () => {
+                    return (
+                      <Flex align="center" gap="middle" justify={"center"}>
+                        <Spin indicator={<LoadingOutlined spin={isLoading}/>}/>
+                      </Flex>
+                    )
+                  },
+                  Scroller: React.forwardRef((props, ref) => (
+                    <div className="chat-scroll-wrapper" ref={ref} {...props} />
+                  )),
+                  List: React.forwardRef((props, ref) => {
+                    return <div className={"message-list-container"}>
+                      <div className={"message-list"} {...props} ref={ref}/>
+                    </div>
+                  })
+                }}
+              />
+            }
 
             <MessageInput
               onSend={handleSendMessage}
+              onEdit={handleEditMessage}
               disabled={!activeConversationId}
-              replyTo={replyTo}
-              onClearReply={handleClearReply}
-              onFileUpload={undefined}/>
+              embeddedMessage={embeddedMessage}
+              onClearEmbeddedMessage={handleClearEmbeddedMessage}
+              // onFileUpload={undefined}
+            />
           </>
         )}
       </div>

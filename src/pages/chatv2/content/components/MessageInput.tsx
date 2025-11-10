@@ -1,69 +1,87 @@
-import React, {FC, useState} from "react";
+import React, {FC, useEffect, useState} from "react";
 import {Button, Flex, Input} from "antd";
-import ReplyPreview from "@/pages/chatv2/content/components/ReplyPreview";
+import EmbeddedMessage from "@/pages/chatv2/content/components/EmbeddedMessage";
 import SentimentSatisfiedOutlinedIcon from '@mui/icons-material/SentimentSatisfiedOutlined';
-import SendIcon from '@mui/icons-material/Send';
 import AttachFileOutlinedIcon from '@mui/icons-material/AttachFileOutlined';
 import {SendOutlined} from "@ant-design/icons";
-import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-import ReplyOutlinedIcon from '@mui/icons-material/ReplyOutlined';
+
+const { TextArea } = Input;
 
 type MessageInputProps = {
-  onSend: (message: string, replyToId?: string) => void;
-  onFileUpload: () => void;
+  onSend: (content: string, embeddedMessage?: any) => void;
+  onEdit: (content: string, embeddedMessage: any) => void;
+  onFileUpload?: () => void;
   placeholder?: string;
   disabled: boolean;
-  replyTo?: API.MessageResDTO;
-  onClearReply?: () => void;
+  embeddedMessage?: API.MessageResDTO;
+  onClearEmbeddedMessage?: () => void;
 }
 
 const MessageInput: FC<MessageInputProps> = ({
                                                onSend,
+                                               onEdit,
                                                onFileUpload,
                                                placeholder = 'Nhập tin nhắn...',
                                                disabled = false,
-                                               replyTo,
-                                               onClearReply
+                                               embeddedMessage,
+                                               onClearEmbeddedMessage
                                              }) => {
   const [message, setMessage] = useState('');
+  const [action, setAction] = useState('');
 
   const handleSend = () => {
     if (message.trim()) {
-      onSend(message.trim(), replyTo?.id);
+      switch (action) {
+        case 'EDIT':
+          onEdit(message.trim(), embeddedMessage);
+          break;
+        default:
+          onSend(message.trim(), embeddedMessage);
+          break;
+      }
       setMessage('');
-      onClearReply?.();
+      onClearEmbeddedMessage?.();
     }
   };
 
-  const handleKeyPress = (e) => {
+  const handleKeyPress = (e: any) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
   };
 
+  useEffect(() => {
+    if (embeddedMessage) {
+      if (embeddedMessage?.action === 'EDIT') {
+        setMessage(embeddedMessage?.content);
+        setAction(embeddedMessage?.action)
+      }
+    }
+  }, [embeddedMessage])
+
+  console.log('embeddedMessage',  embeddedMessage);
+
   return (
-    <div style={{maxWidth: 800, margin: '0 auto', width: '100%'}}>
-
-
+    <div style={{maxWidth: 800, margin: '0 auto', width: '100%', marginTop: 20}}>
       <Flex style={{marginTop: 10, marginBottom: 20}} gap={10} align={"center"}>
-        <Flex gap={15} vertical style={{backgroundColor: '#ffffff', width: '100%', borderRadius: 15,  padding: 10}}>
-          <ReplyPreview replyTo={replyTo} />
+        <Flex gap={10} vertical style={{backgroundColor: '#ffffff', width: '100%', borderRadius: 15,  padding: '2px 10px'}}>
+          <EmbeddedMessage message={embeddedMessage} onClose={onClearEmbeddedMessage}/>
           <Flex align={"center"} gap={10} style={{width: '100%'}}>
             <SentimentSatisfiedOutlinedIcon/>
-            <Input
+            <TextArea
+              autoSize={{ minRows: 1, maxRows: 10 }}
+              placeholder={"Nhập tin nhắn"}
               variant={'borderless'}
               size="large"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder={replyTo ? `Trả lời ${replyTo.sender.name}...` : placeholder}
               disabled={disabled}
-              style={{padding: 0, borderRadius: 0, flex: 1}}
+              style={{flex: 1}}
             />
             <AttachFileOutlinedIcon/>
           </Flex>
-
         </Flex>
 
 
@@ -72,10 +90,9 @@ const MessageInput: FC<MessageInputProps> = ({
         <Button
           size={"large"}
           shape={"circle"}
-          type="primary"
+          type="default"
           icon={<SendOutlined/>}
           onClick={handleSend}
-          disabled={disabled || !message.trim()}
         />
       </Flex>
     </div>

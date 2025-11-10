@@ -1,13 +1,19 @@
-import {Button} from "antd";
+import {Button, Dropdown, Flex, Input, MenuProps, Spin} from "antd";
 import {CloseIcon} from "@/components/Icon";
-import Input from "@/pages/chatv2/content/components/Input";
 import ConversationItem from "@/pages/chatv2/sidebar/ConversationItem";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useModel} from "@@/exports";
 import {useWebSocket} from "@/hooks/useWebSocket";
-
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import EditIcon from '@mui/icons-material/Edit';
+import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
+import MessageBubble from "@/pages/chatv2/content/components/MessageBubble";
+import {LoadingOutlined} from "@ant-design/icons";
+import {Virtuoso} from "react-virtuoso";
 
 const Conversations = () => {
+  const [isHovered, setIsHovered] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [showConversations, setShowConversations] = useState(false);
   const [activeConversationId, setActiveConversationId] = useState('1');
@@ -19,6 +25,19 @@ const Conversations = () => {
     handleUpdateConversation
   } = useModel("conversation");
   const {subscribe, send} = useWebSocket();
+
+  const items: MenuProps['items'] = [
+    {
+      key: '1',
+      label: 'Tạo nhóm mới',
+      icon: <GroupOutlinedIcon/>
+    },
+    {
+      key: '2',
+      label: 'Tạo tin nhắn mới',
+      icon: <PersonOutlineOutlinedIcon/>
+    },
+  ];
 
   useEffect(() => {
     fetchConversations();
@@ -53,7 +72,10 @@ const Conversations = () => {
       transform: isMobile ? (showConversations ? 'translateX(0)' : 'translateX(-100%)') : 'none',
       transition: isMobile ? 'transform 0.3s ease' : 'none',
       display: isMobile && !showConversations ? 'none' : 'block'
-    }}>
+    }}
+         onMouseEnter={() => setIsHovered(true)}
+         onMouseLeave={() => setIsHovered(false)}
+    >
       {isMobile && (
         <div style={{
           padding: '16px',
@@ -71,23 +93,67 @@ const Conversations = () => {
         </div>
       )}
 
-      <div style={{padding: '16px', borderBottom: '1px solid #f0f0f0'}}>
-        <Input placeholder="Tìm kiếm cuộc trò chuyện..." value={undefined} onChange={undefined} onKeyPress={undefined}/>
-      </div>
+      <Flex style={{padding: '14px 16px'}}>
+        <Input prefix={<SearchOutlinedIcon/>}
+               placeholder="Tìm kiếm cuộc trò chuyện..."
+               size={'large'}
+               variant="filled"
+               style={{borderRadius: 15, width: '100%'}}/>
+      </Flex>
 
-      <div style={{
-        overflowY: 'auto',
-        height: isMobile ? 'calc(100% - 128px)' : 'calc(100% - 64px)'
-      }}>
-        {conversations.map((conversation) => (
+      <Virtuoso
+        totalCount={conversations?.length}
+        defaultItemHeight={100}
+        data={conversations}
+        followOutput={(isAtBottom) => {
+          return isAtBottom;
+        }}
+        // rangeChanged={({startIndex, endIndex}) => handleRangeChanged(startIndex, endIndex)}
+        firstItemIndex={0}
+        initialTopMostItemIndex={0}
+        // startReached={(index) => {
+        //   handleFetchMoreMessages();
+        // }}
+        itemContent={(index, conversation) => (
           <ConversationItem
             key={conversation.id}
             conversation={conversation}
             isActive={conversation.id === activeConversationId}
             onClick={() => handleSelectConversation(conversation)}
           />
-        ))}
-      </div>
+        )
+        }
+        components={{
+          Header: () => {
+            return (
+              // <Flex align="center" gap="middle" justify={"center"}>
+              //   <Spin indicator={<LoadingOutlined spin={isLoading}/>}/>
+              // </Flex>
+              <></>
+            )
+          },
+          Scroller: React.forwardRef((props, ref) => (
+            <div className="chat-scroll-wrapper" ref={ref} {...props} />
+          )),
+          // List: React.forwardRef((props, ref) => {
+          //   return <div className={"message-list-container"} {...props} ref={ref}/>
+          // })
+        }}
+      />
+
+      {
+        isHovered &&
+        <Dropdown menu={{items}} placement="topRight">
+          <Button
+            size="large"
+            shape="circle"
+            type="primary"
+            style={{bottom: 20, right: 20, position: 'absolute'}}
+            icon={<EditIcon style={{fontSize: 24}}/>}
+          />
+        </Dropdown>
+      }
+
     </div>
   )
 }
