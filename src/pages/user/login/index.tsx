@@ -13,6 +13,7 @@ import {createStyles} from 'antd-style';
 import React, {useState} from 'react';
 import Settings from '../../../../config/defaultSettings';
 import {login} from "@/services/auth/authController";
+import FileUploader from "@/components/FileUpload";
 
 const useStyles = createStyles(({token}) => {
   return {
@@ -353,6 +354,7 @@ const Login: React.FC = () => {
         </LoginForm>
       </div>
       <Footer/>
+      <FileUploader/>
     </div>
   );
 };

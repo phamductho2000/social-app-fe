@@ -220,9 +220,10 @@ const ChatContent = () => {
         backgroundColor: '#f1f1f1',
         display: 'flex',
         flexDirection: 'column',
-        backgroundImage: `url(${background})`
+        backgroundImage: `url(${background})`,
+        justifyContent: 'end'
       }}>
-        {activeConversationId && (
+        {/*{activeConversationId && (*/}
           <>
             {
               messages?.length > 0 &&
@@ -284,7 +285,7 @@ const ChatContent = () => {
               // onFileUpload={undefined}
             />
           </>
-        )}
+        {/*)}*/}
       </div>
 
     </div>
