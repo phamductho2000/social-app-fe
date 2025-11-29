@@ -76,6 +76,7 @@
     "react-dom": "^18.2.0",
     "react-fittext": "^1.0.0",
     "react-infinite-scroll-component": "^6.1.0",
+    "react-player": "^3.4.0",
     "react-quill": "^2.0.0",
     "react-tagsinput": "^3.20.3",
     "react-virtuoso": "^4.13.0",

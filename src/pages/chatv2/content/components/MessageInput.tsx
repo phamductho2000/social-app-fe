@@ -1,14 +1,16 @@
+import FileUpload from '@/components/FileUpload';
 import EmbeddedMessage from '@/pages/chatv2/content/components/EmbeddedMessage';
 import { SendOutlined } from '@ant-design/icons';
 import AttachFileOutlinedIcon from '@mui/icons-material/AttachFileOutlined';
 import SentimentSatisfiedOutlinedIcon from '@mui/icons-material/SentimentSatisfiedOutlined';
-import {Button, Dropdown, Flex, Input, MenuProps} from 'antd';
-import { FC, useEffect, useState } from 'react';
+import { Button, Dropdown, Flex, Input, MenuProps } from 'antd';
+import { FC, useEffect, useRef, useState } from 'react';
+import EmbeddedFile from "@/pages/chatv2/content/components/EmbeddedFile";
 
 const { TextArea } = Input;
 
 type MessageInputProps = {
-  onSend: (content: string, embeddedMessage?: any) => void;
+  onSend: (content: string, embeddedMessage?: any, files?: any[]) => void;
   onEdit: (content: string, embeddedMessage: any) => void;
   onFileUpload?: () => void;
   placeholder?: string;
@@ -16,33 +18,6 @@ type MessageInputProps = {
   embeddedMessage?: API.MessageResDTO;
   onClearEmbeddedMessage?: () => void;
 };
-
-const items: MenuProps['items'] = [
-  {
-    key: '1',
-    label: (
-      <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
-        1st menu item
-      </a>
-    ),
-  },
-  {
-    key: '2',
-    label: (
-      <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
-        2nd menu item
-      </a>
-    ),
-  },
-  {
-    key: '3',
-    label: (
-      <a target="_blank" rel="noopener noreferrer" href="https://www.luohanacademy.com">
-        3rd menu item
-      </a>
-    ),
-  },
-];
 
 const MessageInput: FC<MessageInputProps> = ({
   onSend,
@@ -53,8 +28,40 @@ const MessageInput: FC<MessageInputProps> = ({
   embeddedMessage,
   onClearEmbeddedMessage,
 }) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [message, setMessage] = useState('');
   const [action, setAction] = useState('');
+  const [selectedFiles, setSelectedFiles] = useState<any[]>([]);
+
+  const items: MenuProps['items'] = [
+    {
+      key: '1',
+      label: (
+        <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
+          1st menu item
+        </a>
+      ),
+      onClick: () => {
+        fileInputRef.current?.click();
+      },
+    },
+    {
+      key: '2',
+      label: (
+        <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
+          2nd menu item
+        </a>
+      ),
+    },
+    {
+      key: '3',
+      label: (
+        <a target="_blank" rel="noopener noreferrer" href="https://www.luohanacademy.com">
+          3rd menu item
+        </a>
+      ),
+    },
+  ];
 
   const handleSend = () => {
     if (message.trim()) {
@@ -63,7 +70,7 @@ const MessageInput: FC<MessageInputProps> = ({
           onEdit(message.trim(), embeddedMessage);
           break;
         default:
-          onSend(message.trim(), embeddedMessage);
+          onSend(message.trim(), embeddedMessage, selectedFiles);
           break;
       }
       setMessage('');
@@ -88,6 +95,7 @@ const MessageInput: FC<MessageInputProps> = ({
   }, [embeddedMessage]);
 
   console.log('embeddedMessage', embeddedMessage);
+  console.log('selectedFiles', selectedFiles);
 
   return (
     <div style={{ maxWidth: 800, margin: '0 auto', width: '100%', marginTop: 20 }}>
@@ -103,6 +111,7 @@ const MessageInput: FC<MessageInputProps> = ({
           }}
         >
           <EmbeddedMessage message={embeddedMessage} onClose={onClearEmbeddedMessage} />
+          <EmbeddedFile files={selectedFiles}/>
           <Flex align={'center'} gap={10} style={{ width: '100%' }}>
             <SentimentSatisfiedOutlinedIcon />
             <TextArea
@@ -116,8 +125,12 @@ const MessageInput: FC<MessageInputProps> = ({
               disabled={disabled}
               style={{ flex: 1 }}
             />
-            <Dropdown menu={{ items }} placement="topRight" overlayStyle={{paddingBottom: 10}}>
-              <AttachFileOutlinedIcon />
+            <Dropdown menu={{ items }} placement="topRight" overlayStyle={{ paddingBottom: 10 }}>
+              <div>
+                <AttachFileOutlinedIcon />
+                <FileUpload fileInputRef={fileInputRef} onResult={(files) => setSelectedFiles(files)}/>
+              </div>
+
             </Dropdown>
           </Flex>
         </Flex>

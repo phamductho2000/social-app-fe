@@ -18,7 +18,7 @@ export default () => {
   }
 
   const handleNewMessage = (message: API.MessageResDTO) => {
-    setMessages((prevMessages) => addOrUpdateToDataSource(prevMessages, message, "tempId"));
+    setMessages((prevMessages) => addOrUpdateToDataSource(prevMessages, message, "clientMsgId"));
   }
 
   return {isLoading, messages, total, handleNewMessage, fetchMessages}

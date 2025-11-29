@@ -17,6 +17,7 @@ import {
 } from "@/core/constant";
 import {markReadMessages} from "@/services/message/messageController";
 import background from "../../../../public/background.jpg";
+import { v4 as uuidv4 } from 'uuid';
 
 const ChatContent = () => {
   const [activeConversationId, setActiveConversationId] = useState('1');
@@ -106,13 +107,17 @@ const ChatContent = () => {
     messagesEndRef.current?.scrollIntoView({behavior: 'smooth'});
   }, [messages]);
 
+  const determineMessageType = (file: any): string => {
+    if (file.type.startsWith('image/')) return 'PHOTO';
+    if (file.type.startsWith('video/')) return 'VIDEO';
+    return 'DOCUMENT';
+  };
 
-  const handleSendMessage = (content: string, embeddedMessage?: any) => {
-    const newMessage: any = {
-      tempId: Date.now().toString(),
+  const createMessage = (content: any, embeddedMessage?: any) => {
+    return {
+      clientMsgId: uuidv4(),
       conversationId: activeConversation?.conversationId,
       content,
-      type: 'TEXT',
       senderId: currentUser?.userId,
       userName: currentUser?.username,
       sentAt: new Date(),
@@ -120,10 +125,77 @@ const ChatContent = () => {
       status: 'SENDING',
       replyTo: embeddedMessage,
     };
+  };
 
-    handleNewMessage(newMessage);
+  const handleSendMessage = (contentMsg: string, embeddedMessage?: any, files?: any[]) => {
+    if (!files || files.length === 0) {
+      // Gửi tin nhắn text thông thường
+      const content = {
+        text: {
+          text: contentMsg,
+        }
+      };
+      const newMessage = createMessage(content, embeddedMessage);
+      handleNewMessage(newMessage);
+      send(TOPIC_MESSAGE_SEND + activeConversation?.conversationId, newMessage);
+      return;
+    }
 
-    send(TOPIC_MESSAGE_SEND + activeConversation?.conversationId, newMessage)
+    // Gửi tin nhắn kèm files
+    files.forEach((file, index) => {
+      const isLastFile = index === files.length - 1;
+
+      // Xác định loại content dựa vào file type
+      const content: any = {};
+
+      if (file.type.startsWith('image/')) {
+        content.photo = {
+          url: file.url || file.preview,
+          name: file.name,
+          size: file.size,
+          // ... các field khác cần thiết
+        };
+      } else if (file.type.startsWith('video/')) {
+        content.video = {
+          url: file.url || file.preview,
+          name: file.name,
+          size: file.size,
+          duration: file.duration,
+          // ... các field khác
+        };
+      } else {
+        content.document = {
+          url: file.url || file.preview,
+          name: file.name,
+          size: file.size,
+          mimeType: file.type,
+          // ... các field khác
+        };
+      }
+
+      // Chỉ thêm text vào message cuối cùng
+      if (isLastFile && contentMsg.trim()) {
+        content.text = {
+          text: contentMsg,
+        };
+      }
+
+      const newMessage: any = {
+        clientMsgId: uuidv4(),
+        conversationId: activeConversation?.conversationId,
+        content,
+        type: determineMessageType(file), // 'PHOTO', 'VIDEO', 'DOCUMENT'
+        senderId: currentUser?.userId,
+        userName: currentUser?.username,
+        sentAt: new Date(),
+        isOwn: true,
+        status: 'SENDING',
+        replyTo: embeddedMessage,
+      };
+
+      handleNewMessage(newMessage);
+      send(TOPIC_MESSAGE_SEND + activeConversation?.conversationId, newMessage);
+    });
   };
 
   const handleEditMessage = (content: string, embeddedMessage: any) => {

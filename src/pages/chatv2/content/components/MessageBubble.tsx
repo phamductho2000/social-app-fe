@@ -1,50 +1,50 @@
-import {FC, useState} from "react";
-import {Avatar, Dropdown, Flex, Menu, MenuProps} from "antd";
-import MessageReactions from "@/pages/chatv2/content/components/MessageReactions";
-import ReactionPicker from "@/pages/chatv2/content/components/ReactionPicker";
-import ImageMessage from "@/pages/chatv2/content/components/ImageMessage";
-import VideoMessage from "@/pages/chatv2/content/components/VideoMessage";
-import FileMessage from "@/pages/chatv2/content/components/FileMessage";
-import dayjs from "dayjs";
-import ReplyOutlinedIcon from '@mui/icons-material/ReplyOutlined';
-import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-import ForwardOutlinedIcon from '@mui/icons-material/ForwardOutlined';
-import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
+import EmbeddedMessage from '@/pages/chatv2/content/components/EmbeddedMessage';
+import FileMessage from '@/pages/chatv2/content/components/FileMessage';
+import ImageMessage from '@/pages/chatv2/content/components/ImageMessage';
+import MessageReactions from '@/pages/chatv2/content/components/MessageReactions';
+import ReactionPicker from '@/pages/chatv2/content/components/ReactionPicker';
+import VideoMessage from '@/pages/chatv2/content/components/VideoMessage';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
-import DoneAllOutlinedIcon from '@mui/icons-material/DoneAllOutlined';
-import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye';
+import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import DoneIcon from '@mui/icons-material/Done';
+import DoneAllOutlinedIcon from '@mui/icons-material/DoneAllOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import ForwardOutlinedIcon from '@mui/icons-material/ForwardOutlined';
 import PushPinIcon from '@mui/icons-material/PushPin';
-import EmbeddedMessage from "@/pages/chatv2/content/components/EmbeddedMessage";
+import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
+import ReplyOutlinedIcon from '@mui/icons-material/ReplyOutlined';
+import { Avatar, Dropdown, Flex, Menu, MenuProps } from 'antd';
+import dayjs from 'dayjs';
+import { FC, useState } from 'react';
 
 type Message = API.MessageResDTO & {
-  isOwn: boolean
+  isOwn: boolean;
 };
 
 type MessageBubbleProps = {
-  currentUserId?: string,
-  message: Message,
-  onDelete: (messageId: string | undefined) => void,
-  onEdit: (message: API.MessageResDTO) => void,
-  onPin: (message: API.MessageResDTO) => void,
-  onCopy: (content: any) => void,
-  onReply: (message: API.MessageResDTO) => void,
-  onReaction: (messageId: string, emoji: string) => void,
-  allMessages: API.MessageResDTO[]
-}
+  currentUserId?: string;
+  message: Message;
+  onDelete: (messageId: string | undefined) => void;
+  onEdit: (message: API.MessageResDTO) => void;
+  onPin: (message: API.MessageResDTO) => void;
+  onCopy: (content: any) => void;
+  onReply: (message: API.MessageResDTO) => void;
+  onReaction: (messageId: string, emoji: string) => void;
+  allMessages: API.MessageResDTO[];
+};
 const MessageBubble: FC<MessageBubbleProps> = ({
-                                                 currentUserId,
-                                                 message,
-                                                 onDelete,
-                                                 onEdit,
-                                                 onPin,
-                                                 onCopy,
-                                                 onReply,
-                                                 onReaction,
-                                                 allMessages
-                                               }) => {
+  currentUserId,
+  message,
+  onDelete,
+  onEdit,
+  onPin,
+  onCopy,
+  onReply,
+  onReaction,
+  allMessages,
+}) => {
   const [showMenu, setShowMenu] = useState(false);
   const [showReactionPicker, setShowReactionPicker] = useState(false);
   const [isOwn, setIsOwn] = useState<boolean>(currentUserId === message?.senderId);
@@ -52,14 +52,16 @@ const MessageBubble: FC<MessageBubbleProps> = ({
   const items: MenuProps['items'] = [
     {
       key: '1',
-      label: <ReactionPicker
-        onSelect={handleReactionSelect}
-        onClose={() => setShowReactionPicker(false)}
-      />,
+      label: (
+        <ReactionPicker
+          onSelect={handleReactionSelect}
+          onClose={() => setShowReactionPicker(false)}
+        />
+      ),
       onClick: () => {
         setShowReactionPicker(true);
       },
-      className: "no-hover"
+      className: 'no-hover',
     },
     {
       type: 'divider',
@@ -67,59 +69,59 @@ const MessageBubble: FC<MessageBubbleProps> = ({
     {
       key: '2',
       label: 'Trả lời',
-      icon: <ReplyOutlinedIcon/>,
+      icon: <ReplyOutlinedIcon />,
       onClick: () => {
         onReply?.(message);
-      }
+      },
     },
     {
       key: '3',
       label: 'Chỉnh sửa',
-      icon: <EditOutlinedIcon/>,
+      icon: <EditOutlinedIcon />,
       onClick: () => {
         onEdit?.(message);
-      }
+      },
     },
     {
       key: '4',
       label: 'Sao chép',
-      icon: <ContentCopyOutlinedIcon/>,
+      icon: <ContentCopyOutlinedIcon />,
       onClick: () => {
         onCopy?.(message.content);
-      }
+      },
     },
     {
       key: '5',
       label: 'Ghim',
-      icon: <PushPinOutlinedIcon/>,
+      icon: <PushPinOutlinedIcon />,
       onClick: () => {
         onPin?.(message);
-      }
+      },
     },
     {
       key: '6',
       label: 'Chọn',
-      icon: <CheckCircleOutlineOutlinedIcon/>,
+      icon: <CheckCircleOutlineOutlinedIcon />,
       onClick: () => {
         onCopy?.(message.content);
-      }
+      },
     },
     {
       key: '6',
       label: 'Chuyển tiếp',
-      icon: <ForwardOutlinedIcon/>,
+      icon: <ForwardOutlinedIcon />,
       onClick: () => {
         onCopy?.(message.content);
-      }
+      },
     },
     {
       key: '7',
       label: 'Xóa',
-      icon: <DeleteOutlinedIcon/>
+      icon: <DeleteOutlinedIcon />,
     },
     {
-      type: "divider"
-    }
+      type: 'divider',
+    },
   ];
 
   const handleContextMenu = (e) => {
@@ -147,8 +149,9 @@ const MessageBubble: FC<MessageBubbleProps> = ({
   };
 
   // Find the original message if this is a reply
-  const replyToMessage = message.replyTo ?
-    allMessages.find(msg => msg.id === message.replyTo) : null;
+  const replyToMessage = message.replyTo
+    ? allMessages.find((msg) => msg.id === message.replyTo)
+    : null;
 
   const renderMessageContent = () => {
     switch (message.type) {
@@ -161,9 +164,7 @@ const MessageBubble: FC<MessageBubbleProps> = ({
               onClick={() => handleMediaClick(message.imageUrl)}
             />
             {message.content && (
-              <div style={{marginTop: '8px', fontSize: '14px'}}>
-                {message.content}
-              </div>
+              <div style={{ marginTop: '8px', fontSize: '14px' }}>{message.content}</div>
             )}
           </div>
         );
@@ -177,9 +178,7 @@ const MessageBubble: FC<MessageBubbleProps> = ({
               onClick={() => handleMediaClick(message.videoUrl)}
             />
             {message.content && (
-              <div style={{marginTop: '8px', fontSize: '14px'}}>
-                {message.content}
-              </div>
+              <div style={{ marginTop: '8px', fontSize: '14px' }}>{message.content}</div>
             )}
           </div>
         );
@@ -187,123 +186,113 @@ const MessageBubble: FC<MessageBubbleProps> = ({
       case 'FILE':
         return (
           <div>
-            <FileMessage
-              file={message.file}
-              onDownload={() => handleFileDownload(message.file)}
-            />
+            <FileMessage file={message.file} onDownload={() => handleFileDownload(message.file)} />
             {message.content && (
-              <div style={{marginTop: '8px', fontSize: '14px'}}>
-                {message.content}
-              </div>
+              <div style={{ marginTop: '8px', fontSize: '14px' }}>{message.content}</div>
             )}
           </div>
         );
 
       case 'TEXT':
       default:
-        return (
-          <div style={{fontSize: '16px'}}>
-            {message.content}
-          </div>
-        );
+        return <div style={{ fontSize: '16px' }}>{message.content}</div>;
     }
   };
 
   return (
-    <Flex className={showMenu ? "message-item has-menu-open" : "message-item"}
-          justify={isOwn ? 'flex-end' : 'flex-start'} align={'baseline'}
-          style={{
-            marginBottom: 15,
-            position: 'relative'
-          }}
+    <Flex
+      className={showMenu ? 'message-item has-menu-open' : 'message-item'}
+      justify={isOwn ? 'flex-end' : 'flex-start'}
+      align={'baseline'}
+      style={{
+        marginBottom: 15,
+        position: 'relative',
+      }}
     >
-      {!isOwn && (
-        <Avatar
-          size={36}
-          src={message?.avatar}
-          style={{marginRight: 8}}
-        />
-      )}
+      {!isOwn && <Avatar size={36} src={message?.avatar} style={{ marginRight: 8 }} />}
 
-      <div style={{maxWidth: '70%', position: 'relative'}}>
-        <Dropdown popupRender={(menu) => (
-          <Menu
-            style={{width: 200, fontSize: 16}}
-            mode="vertical"
-            items={items}
-          />)}
-                  trigger={['contextMenu']}
-                  onOpenChange={(open) => {
-                    setShowMenu(open);
-                    setShowReactionPicker(open);
-                  }}
+      <div style={{ maxWidth: '70%', position: 'relative' }}>
+        <Dropdown
+          popupRender={(menu) => (
+            <Menu style={{ width: 200, fontSize: 16 }} mode="vertical" items={items} />
+          )}
+          trigger={['contextMenu']}
+          onOpenChange={(open) => {
+            setShowMenu(open);
+            setShowReactionPicker(open);
+          }}
         >
-          <Flex vertical justify={'flex-start'} gap={10}
-                onContextMenu={handleContextMenu}
-                style={{
-                  padding: '8px 12px',
-                  borderRadius: isOwn ? '12px 12px 4px 12px' : '12px 12px 12px 4px',
-                  backgroundColor: isOwn ? '#EEFFDE' : '#ffffff',
-                  color: isOwn ? 'black' : 'black',
-                  position: 'relative',
-                  cursor: 'pointer',
-                  width: '100%',
-
-                }}
+          <Flex
+            vertical
+            justify={'flex-start'}
+            gap={10}
+            onContextMenu={handleContextMenu}
+            style={{
+              padding: '8px 12px',
+              borderRadius: isOwn ? '12px 12px 4px 12px' : '12px 12px 12px 4px',
+              backgroundColor: isOwn ? '#EEFFDE' : '#ffffff',
+              color: isOwn ? 'black' : 'black',
+              position: 'relative',
+              cursor: 'pointer',
+              width: '100%',
+            }}
           >
-            <EmbeddedMessage message={message?.replyTo} isView={true}/>
-            <Flex style={{width: '100%'}} gap={10}>
+            <EmbeddedMessage message={message?.replyTo} isView={true} />
+            <Flex style={{ width: '100%' }} gap={10}>
               {renderMessageContent()}
               <div
                 style={{
-                  fontSize: "11px",
-                  color: "#777",
+                  fontSize: '11px',
+                  color: '#777',
                 }}
               >
-                <div style={{visibility: 'hidden'}}>
-                  {message?.pinned && <PushPinIcon/>}
+                <div style={{ visibility: 'hidden' }}>
+                  {message?.pinned && <PushPinIcon />}
                   {message?.edited && 'edited'}
-                  {dayjs(message?.sentAt)?.format("HH:mm")}
+                  {dayjs(message?.sentAt)?.format('HH:mm')}
                   {isOwn && message?.status && (
                     <span>
-                  {message?.status === 'READ' ?
-                    <DoneAllOutlinedIcon style={{fontSize: 16, color: '#46BA43'}}/> : message.status === 'SENT' ?
-                      <DoneIcon style={{fontSize: 16, color: '#46BA43'}}/> : <PanoramaFishEyeIcon/>}
-                </span>
+                      {message?.status === 'READ' ? (
+                        <DoneAllOutlinedIcon style={{ fontSize: 16, color: '#46BA43' }} />
+                      ) : message.status === 'SENT' ? (
+                        <DoneIcon style={{ fontSize: 16, color: '#46BA43' }} />
+                      ) : (
+                        <AccessTimeIcon style={{ fontSize: 16, color: '#46BA43' }} />
+                      )}
+                    </span>
                   )}
                 </div>
-                <Flex gap={2} align={'normal'} style={{
-                  right: 5,
-                  bottom: 2,
-                  position: 'absolute',
-                  alignItems: 'center'
-                }}>
-                  {
-                    message?.pinned &&
-                    <PushPinIcon fontSize={'inherit'} color={'inherit'}/>
-                  }
-                  {
-                    message?.edited &&
-                    <span style={{color: '#46BA43'}}>
-                      {'edited'}
-                    </span>
-                  }
+                <Flex
+                  gap={2}
+                  // align={'normal'}
+                  style={{
+                    right: 5,
+                    bottom: 2,
+                    position: 'absolute',
+                    alignItems: 'normal',
+                  }}
+                >
+                  {message?.pinned && <PushPinIcon fontSize={'inherit'} color={'inherit'} />}
+                  {message?.edited && <span style={{ color: '#46BA43' }}>{'edited'}</span>}
 
-                  <span style={{color: '#46BA43'}}>
-                    {dayjs(message?.sentAt)?.format("HH:mm")}
+                  <span style={{ color: '#46BA43' }}>
+                    {dayjs(message?.sentAt)?.format('HH:mm')}
                   </span>
 
                   {isOwn && message?.status && (
                     <span>
-                  {message?.status === 'READ' ?
-                    <DoneAllOutlinedIcon style={{fontSize: 16, color: '#46BA43'}}/> : message.status === 'SENT' ?
-                      <DoneIcon style={{fontSize: 16, color: '#46BA43'}}/> : <PanoramaFishEyeIcon/>}
-                </span>
+                      {message?.status === 'READ' ? (
+                        <DoneAllOutlinedIcon style={{ fontSize: 16, color: '#46BA43' }} />
+                      ) : message.status === 'SENT' ? (
+                        <DoneIcon style={{ fontSize: 16, color: '#46BA43' }} />
+                      ) : (
+                        <AccessTimeIcon style={{ fontSize: 16, color: '#46BA43' }} />
+                      )}
+                    </span>
                   )}
                 </Flex>
               </div>
             </Flex>
-
           </Flex>
         </Dropdown>
 
@@ -314,7 +303,6 @@ const MessageBubble: FC<MessageBubbleProps> = ({
         />
       </div>
     </Flex>
-  )
-    ;
+  );
 };
 export default MessageBubble;

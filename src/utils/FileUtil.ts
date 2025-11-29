@@ -1,4 +1,7 @@
-export const chunkFile = (file: File, chunkSize = 5 * 1024 * 1024) => { // 5MB default
+import {FILE_ICON_MAP} from "@/core/constant";
+
+export const chunkFile = (file: File, chunkSize = 5 * 1024 * 1024) => {
+  // 5MB default
   const chunks = [];
   let offset = 0;
 
@@ -30,4 +33,46 @@ export const calculateChunkSize = (fileSize: number) => {
   }
 
   return chunkSize;
+};
+
+export const getFileCategory = (file: File) => {
+  const type = file.type;
+
+  if (type.startsWith('image/')) return 'image';
+  if (type.startsWith('video/')) return 'video';
+  if (type.startsWith('audio/')) return 'audio';
+  if (type === 'application/pdf') return 'pdf';
+
+  // office docs
+  if (
+    type.includes('word') ||
+    type.includes('excel') ||
+    type.includes('presentation') ||
+    type.includes('sheet') ||
+    type.includes('msword')
+  ) {
+    return 'document';
+  }
+
+  return 'other';
+};
+
+export const getFileExtension = (file: File): string => {
+  const name = file.name;
+  const parts = name.split(".");
+  return parts.length > 1 ? parts.pop()!.toLowerCase() : "";
+}
+
+export const getFileIcon = (file: File): string => {
+  const ext = getFileExtension(file);
+
+  return FILE_ICON_MAP[ext] ?? "/icons/file-preview/unknown.svg"; // default
+}
+
+const roundTo = (num: number, digits: number) =>
+  Math.round(num * 10**digits) / 10**digits;
+
+export const bytesToMB = (bytes: number, digits = 2) => {
+  const mb = bytes / (1024 * 1024);
+  return roundTo(mb, digits);
 };
